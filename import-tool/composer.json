@@ -1,0 +1,10 @@
+{
+  "name": "sim/import-tool",
+  "description": "TikTok OrderSKUList Excel importer for SIM project",
+  "require": {
+    "phpoffice/phpspreadsheet": "^2.1"
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}
