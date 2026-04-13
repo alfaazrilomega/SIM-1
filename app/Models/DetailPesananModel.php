@@ -12,13 +12,10 @@ class DetailPesananModel extends Model
     protected $returnType       = 'array';
 
     protected $allowedFields = [
-        'order_id',
-        'nama_produk_raw',
-        'variasi_raw',
-        'kombinasi_produk',
-        'quantity',
-        'sku_order_amount',
-        'sku_settlement_amt',
+        'order_id', 'sku_id', 'seller_sku', 'nama_produk_raw', 'variasi_raw', 'kombinasi_produk',
+        'quantity', 'sku_quantity_of_return', 'sku_unit_original_price',
+        'sku_subtotal_before_discount', 'sku_platform_discount', 'sku_seller_discount',
+        'sku_subtotal_after_discount', 'sku_settlement_amt'
     ];
 
     protected $useTimestamps = false;
@@ -41,15 +38,9 @@ class DetailPesananModel extends Model
 
         $rows = [];
         foreach ($items as $item) {
-            $rows[] = [
-                'order_id'           => $orderId,
-                'nama_produk_raw'    => $item['nama_produk_raw'],
-                'variasi_raw'        => $item['variasi_raw'],
-                'kombinasi_produk'   => $item['kombinasi_produk'],
-                'quantity'           => (int)$item['quantity'],
-                'sku_order_amount'   => (float)$item['sku_order_amount'],
-                'sku_settlement_amt' => (float)$item['sku_settlement_amt'],
-            ];
+            $row = array_intersect_key($item, array_flip($this->allowedFields));
+            $row['order_id'] = $orderId;
+            $rows[] = $row;
         }
 
         return $this->insertBatch($rows) !== false;
