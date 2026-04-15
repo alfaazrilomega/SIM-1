@@ -107,7 +107,6 @@
     <!-- Navbar Rekan Tim -->
     <?= $this->include('partials/navbar') ?>
     <hr style="border-color: rgba(255,255,255,0.05); margin-bottom: 2rem; margin-top: 1rem;">
-
     <!-- Konten Utama Halaman -->
     <?= $this->renderSection('content') ?>
   </div>

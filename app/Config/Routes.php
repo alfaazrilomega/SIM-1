@@ -50,3 +50,27 @@ $routes->post('/produk-bumbu/simpan',       'ProdukBumbu::simpan');
 $routes->post('/produk-bumbu/tambah-stok',  'ProdukBumbu::tambahStok');
 $routes->post('/produk-bumbu/kurangi-stok', 'ProdukBumbu::kurangiStok');
 $routes->post('/produk-bumbu/hapus',        'ProdukBumbu::hapus');
+
+// Finance & HRD Modules (Kas, Absensi, Gaji)
+// =============================================
+$routes->group('finance', function ($routes) {
+    $routes->get('pengeluaran', 'Finance::index');
+    $routes->post('store', 'Finance::store');
+});
+
+$routes->group('hrd', function ($routes) {
+    // Karyawan
+    $routes->get('karyawan', 'HRD::karyawan');
+    $routes->post('store-karyawan', 'HRD::storeKaryawan');
+    $routes->post('delete-karyawan/(:num)', 'HRD::deleteKaryawan/$1');
+    
+    // Absensi
+    $routes->get('absensi', 'HRD::absensi');
+    $routes->post('store-absensi', 'HRD::storeAbsensi');
+    $routes->post('delete-absensi/(:num)', 'HRD::deleteAbsensi/$1');
+    
+    // Penggajian
+    $routes->get('penggajian', 'HRD::penggajian');
+    $routes->post('generate-gaji', 'HRD::generateGaji');
+    $routes->post('bayar-gaji/(:num)', 'HRD::bayarGaji/$1');
+});
