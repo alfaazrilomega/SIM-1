@@ -131,13 +131,33 @@ h1.sim-title {
         <div class="card-title">Import Data</div>
         <div class="card-desc">Upload &amp; sinkronisasi data pesanan</div>
       </a>
-    </div>
+    <!-- Dashboard Pencairan -->
     <div class="tilt-wrap">
-      <a href="<?= base_url('/withdrawal') ?>" class="card tilt-inner">
+      <a href="<?= base_url('/withdrawal') ?>" class="card tilt-inner" style="border-left: 4px solid #f59e0b;">
         <div class="card-shine"></div>
-        <span class="card-icon">🔐</span>
-        <div class="card-title">Withdrawal</div>
-        <div class="card-desc">Kelola penarikan dana</div>
+        <span class="card-icon">💰</span>
+        <div class="card-title">Pencairan Dana</div>
+        <div class="card-desc">Hak akses CEO. Kelola riwayat pendapatan dan pencairan dana pesanan selesai.</div>
+      </a>
+    </div>
+
+    <!-- Modul Baru: Finance -->
+    <div class="tilt-wrap">
+      <a href="<?= base_url('/finance/pengeluaran') ?>" class="card tilt-inner" style="border-left: 4px solid #4f8ef7;">
+        <div class="card-shine"></div>
+        <span class="card-icon">💳</span>
+        <div class="card-title">Finance & Kas</div>
+        <div class="card-desc">Manajemen arus kas, pengeluaran operasional, dan pelunasan gaji.</div>
+      </a>
+    </div>
+
+    <!-- Modul Baru: HRD -->
+    <div class="tilt-wrap">
+      <a href="<?= base_url('/hrd/karyawan') ?>" class="card tilt-inner" style="border-left: 4px solid #7c5cfc;">
+        <div class="card-shine"></div>
+        <span class="card-icon">👥</span>
+        <div class="card-title">HRD & Payroll</div>
+        <div class="card-desc">Kelola data karyawan, absensi harian, dan sistem penggajian otomatis.</div>
       </a>
     </div>
   </div>

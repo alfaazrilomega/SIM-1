@@ -78,13 +78,218 @@
 <!-- Page Header -->
 <div class="page-header">
     <div>
-        <div class="page-title"><i class="bi bi-cloud-arrow-down-fill"></i> Import</div>
-        <div class="page-subtitle">Import data produk & bahan baku dari file eksternal</div>
+        <div class="page-title"><i class="bi bi-cloud-arrow-down-fill"></i> Import Data</div>
+        <div class="page-subtitle">Import data produk & bahan baku dari file eksternal (TikTok OrderSKUList)</div>
     </div>
     <div class="filter-bar">
+        <a href="<?= base_url('/withdrawal') ?>" class="btn-ghost" style="color:#f59e0b; border-color:rgba(245,158,11,.4);"><i class="bi bi-shield-lock-fill"></i> Dashboard Pencairan (CEO)</a>
         <button class="btn-ghost"><i class="bi bi-file-earmark-arrow-down"></i> Unduh Template</button>
         <button class="btn-accent"><i class="bi bi-cloud-arrow-down-fill"></i> Mulai Import</button>
     </div>
+</div>
+
+<div class="grid">
+    <!-- ====== LEFT: Upload Panel ====== -->
+    <div>
+        <div class="card">
+            <p class="card-label"><i class="bi bi-cloud-arrow-up"></i>Upload File Excel</p>
+            
+            <!-- Drop Zone -->
+            <div id="drop-zone" tabindex="0" role="button" class="upload-zone"
+                 aria-label="Klik atau seret file Excel .xlsx ke area ini">
+                <i class="bi bi-file-earmark-spreadsheet upload-icon"></i>
+                <div class="upload-title">Seret & Lepas file di sini</div>
+                <div class="upload-sub">atau <u style="color:var(--accent)">klik untuk memilih file</u></div>
+                <div class="upload-formats">
+                    <span class="fmt-tag">.xlsx</span>
+                    <span class="fmt-tag">.xls</span>
+                    <span class="fmt-tag">.csv</span>
+                    <span class="fmt-tag">Maks: 50 MB</span>
+                </div>
+            </div>
+            <input type="file" id="file-picker" accept=".xlsx,.xls,.csv" style="display:none">
+
+            <!-- Import Button -->
+            <button id="btn-import" class="btn-accent" style="width:100%; justify-content:center; padding:12px;" disabled>
+                <i class="bi bi-database-up"></i>
+                <span id="btn-text">Pilih file terlebih dahulu</span>
+            </button>
+        </div><!-- /.card -->
+    </div><!-- /LEFT -->
+
+    <!-- ====== RIGHT: Info Sidebar ====== -->
+    <div>
+        <!-- Business Rules -->
+        <div class="card" style="margin-bottom:1rem">
+            <p class="card-label"><i class="bi bi-shield-check"></i>Business Rules Aktif</p>
+            <ul class="info-list" style="list-style:none; padding:0;">
+                <li style="display:flex; gap:10px; margin-bottom:12px;">
+                    <i class="bi bi-arrow-repeat" style="color:var(--warning)"></i>
+                    <div class="it"><strong>Upsert by Order ID</strong><br><span style="font-size:0.75rem; color:var(--text-muted)">Sudah ada → UPDATE. Baru → INSERT. Tanpa duplikat.</span></div>
+                </li>
+                <li style="display:flex; gap:10px; margin-bottom:12px;">
+                    <i class="bi bi-lock-fill" style="color:var(--success)"></i>
+                    <div class="it"><strong>Status Pencairan CEO Aman</strong><br><span style="font-size:0.75rem; color:var(--text-muted)"><code>status_penarikan</code> TIDAK direset saat re-import.</span></div>
+                </li>
+            </ul>
+        </div>
+    </div><!-- /RIGHT -->
+</div>
+
+    <div class="grid">
+
+      <!-- ====== LEFT: Upload Panel ====== -->
+      <div>
+        <div class="card">
+          <p class="card-label"><i class="bi bi-cloud-arrow-up"></i>Upload File Excel</p>
+
+          <!-- Drop Zone -->
+          <div id="drop-zone" tabindex="0" role="button"
+               aria-label="Klik atau seret file Excel .xlsx ke area ini">
+            <i class="bi bi-file-earmark-spreadsheet dz-icon"></i>
+            <div class="dz-title">Seret & Lepas file di sini</div>
+            <div class="dz-sub">atau <u style="color:var(--accent)">klik untuk memilih file</u></div>
+            <div class="dz-tag">Format: .xlsx &nbsp;·&nbsp; Maks: 50 MB</div>
+          </div>
+          <input type="file" id="file-picker" accept=".xlsx">
+
+          <!-- File Strip -->
+          <div id="file-strip">
+            <i class="bi bi-file-earmark-excel-fill fs-icon"></i>
+            <div>
+              <div id="fs-name" class="fs-name"></div>
+              <div id="fs-size" class="fs-size"></div>
+            </div>
+            <button id="btn-clear" title="Hapus file">&times;</button>
+          </div>
+
+          <!-- Import Button -->
+          <button id="btn-import" disabled>
+            <i class="bi bi-database-up" id="btn-icon"></i>
+            <span id="btn-text">Pilih file terlebih dahulu</span>
+          </button>
+
+          <!-- Progress -->
+          <div id="progress-wrap">
+            <div class="prog-label pulsing" id="prog-label">Membaca file Excel…</div>
+            <div class="prog-track">
+              <div class="prog-fill" id="prog-fill"></div>
+            </div>
+          </div>
+        </div><!-- /.card -->
+
+        <!-- Results -->
+        <div id="results-wrap">
+
+          <!-- Stat Chips -->
+          <div class="stat-row" id="stat-row"></div>
+
+          <!-- Error Box -->
+          <div class="err-box" id="err-box"></div>
+
+          <!-- Preview Table -->
+          <div class="table-card" id="preview-card">
+            <div class="table-card-head">
+              <i class="bi bi-table" style="color:var(--accent)"></i>
+              <span class="card-label" style="margin:0">Preview (10 Pesanan Pertama)</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>Produk (Sample)</th>
+                    <th>Items</th>
+                    <th>Total (Rp)</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="preview-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /#results-wrap -->
+      </div><!-- /LEFT -->
+
+      <!-- ====== RIGHT: Info Sidebar ====== -->
+      <div>
+        <!-- Business Rules -->
+        <div class="card" style="margin-bottom:1rem">
+          <p class="card-label"><i class="bi bi-shield-check"></i>Business Rules Aktif</p>
+          <ul class="info-list">
+            <li>
+              <i class="bi bi-arrow-repeat ii" style="color:var(--warning)"></i>
+              <div class="it"><strong>Upsert by Order ID</strong>
+              <span>Sudah ada → UPDATE. Baru → INSERT. Tanpa duplikat.</span></div>
+            </li>
+            <li>
+              <i class="bi bi-lock-fill ii" style="color:var(--success)"></i>
+              <div class="it"><strong>Status Pencairan CEO Aman</strong>
+              <span><code>status_penarikan</code> TIDAK direset saat re-import.</span></div>
+            </li>
+            <li>
+              <i class="bi bi-funnel-fill ii" style="color:var(--accent)"></i>
+              <div class="it"><strong>Laporan filter "Selesai"</strong>
+              <span>View laporan hanya tampilkan pesanan berstatus <em>Selesai</em>.</span></div>
+            </li>
+            <li>
+              <i class="bi bi-tags-fill ii" style="color:#c084fc"></i>
+              <div class="it"><strong>Kombinasi Produk + Variasi</strong>
+              <span>Variasi "Default" → cek tabel <code>product_mapping</code>. Non-Default → nama + variasi.</span></div>
+            </li>
+            <li>
+              <i class="bi bi-recycle ii" style="color:var(--warning)"></i>
+              <div class="it"><strong>Detail Rebuild Otomatis</strong>
+              <span>Item lama dihapus & diganti versi terbaru setiap re-import.</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columns -->
+        <div class="card" style="margin-bottom:1rem">
+          <p class="card-label"><i class="bi bi-columns"></i>Kolom yang Dibaca</p>
+          <ul class="info-list">
+            <?php
+            $cols = [
+              ['Order ID',              'Primary Key pesanan (18-digit TikTok ID)'],
+              ['Order Status',          'Selesai / Dikirim / Dibatalkan'],
+              ['Product Name',          'Nama produk verbatim dari Excel'],
+              ['Variation',             'Variasi SKU (incl. "Default")'],
+              ['Quantity',              'Jumlah unit tiap SKU'],
+              ['SKU Settlement Amount', 'Jumlah yang diterima seller'],
+              ['Create Time & Paid Time', 'Waktu order & pembayaran'],
+            ];
+            foreach ($cols as [$title, $desc]):
+            ?>
+            <li>
+              <i class="bi bi-check-circle-fill ii" style="color:var(--success)"></i>
+              <div class="it"><strong><?= esc($title) ?></strong><span><?= esc($desc) ?></span></div>
+            </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+
+        <!-- Setup -->
+        <div class="card">
+          <p class="card-label"><i class="bi bi-terminal"></i>Setup Pertama Kali</p>
+          <div style="font-size:.8rem;color:var(--muted);line-height:1.9">
+            <div>1️⃣ Jalankan database migration:</div>
+            <pre class="cmd">php spark migrate</pre>
+            <div>2️⃣ Server development:</div>
+            <pre class="cmd">php spark serve</pre>
+            <div style="margin-top:.5rem">3️⃣ Buka <a href="<?= base_url('/import') ?>" style="color:var(--accent)"><?= base_url('/import') ?></a></div>
+          </div>
+        </div>
+
+      </div><!-- /RIGHT -->
+    </div><!-- /.grid -->
+  </main>
+
+  <footer>
+    SIM Import Tool &nbsp;·&nbsp; CodeIgniter 4 &nbsp;·&nbsp; Platform: <code>TikTok OrderSKUList</code> &nbsp;·&nbsp; DB: <code>sim_orders</code>
+  </footer>
 </div>
 
 <!-- Steps -->

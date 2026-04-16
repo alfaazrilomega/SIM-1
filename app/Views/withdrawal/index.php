@@ -1,148 +1,451 @@
 <?= $this->extend('layouts/main') ?>
+
 <?= $this->section('content') ?>
 
 <style>
-.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
-.page-title   { font-size:1.4rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:10px; }
-.page-title i { color:var(--accent); }
-.page-subtitle{ font-size:.8rem; color:var(--text-muted); margin-top:2px; }
+    /* ===== VARIABLES & STAT CARDS ===== */
+    .stat-card {
+      background: var(--bg-side); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem 1.4rem;
+      position: relative; overflow: hidden; transition: all .25s;
+    }
+    .stat-card:hover { border-color: rgba(79,142,247,.28); transform: translateY(-2px); }
+    .stat-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at top right, var(--glow, rgba(79,142,247,.06)), transparent 65%);
+      pointer-events: none;
+    }
+    .stat-card.card-gold   { --glow: rgba(245,158,11,.08); }
+    .stat-card.card-green  { --glow: rgba(34,197,94,.07); }
+    .stat-card.card-purple { --glow: rgba(124,92,252,.07); }
+    .stat-card.card-blue   { --glow: rgba(79,142,247,.07); }
 
-.stat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:28px; }
-.stat-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; overflow:hidden; transition:border-color .2s, transform .2s; }
-.stat-card:hover { border-color:rgba(79,142,247,.4); transform:translateY(-2px); }
-.stat-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(79,142,247,.04), rgba(124,92,252,.04)); }
-.stat-card .stat-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-bottom:14px; }
-.stat-card .stat-value { font-size:1.6rem; font-weight:700; color:#f1f5f9; line-height:1; margin-bottom:4px; }
-.stat-card .stat-label { font-size:.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
-.icon-blue   { background:rgba(79,142,247,.15); color:#4f8ef7; }
-.icon-purple { background:rgba(124,92,252,.15); color:#7c5cfc; }
-.icon-yellow { background:rgba(250,204,21,.15);  color:#facc15; }
-.icon-green  { background:rgba(34,197,94,.15);   color:#4ade80; }
+    .sc-icon { font-size: 1.5rem; margin-bottom: .75rem; }
+    .sc-val  { font-size: 1.55rem; font-weight: 800; line-height: 1.1; color: #fff; }
+    .sc-subval { font-size: .9rem; font-weight: 600; color: var(--text-muted); margin-top: .1rem; }
+    .sc-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: .5rem; }
 
-.table-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
-.table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.table-card-title  { font-size:.9rem; font-weight:600; color:#e2e8f0; }
-.table-responsive  { overflow-x:auto; }
-.sim-table { width:100%; border-collapse:collapse; font-size:.83rem; }
-.sim-table thead tr { background:#020617; }
-.sim-table thead th { padding:11px 16px; text-align:left; color:var(--text-muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--border); white-space:nowrap; }
-.sim-table tbody tr { border-bottom:1px solid rgba(30,41,59,.6); transition:background .15s; }
-.sim-table tbody tr:last-child { border-bottom:none; }
-.sim-table tbody tr:hover { background:rgba(79,142,247,.04); }
-.sim-table tbody td { padding:11px 16px; color:#cbd5e1; vertical-align:middle; }
-.badge-sim { display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:600; padding:3px 9px; border-radius:20px; }
-.badge-success { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
-.badge-warning { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.2); }
-.badge-danger  { background:rgba(239,68,68,.12);  color:#f87171; border:1px solid rgba(239,68,68,.2); }
-.badge-info    { background:rgba(79,142,247,.12); color:#4f8ef7; border:1px solid rgba(79,142,247,.2); }
-.filter-bar { display:flex; gap:8px; flex-wrap:wrap; }
-.sim-select, .sim-input { background:#1e293b; border:1px solid var(--border); color:#e2e8f0; border-radius:8px; padding:6px 12px; font-size:.8rem; outline:none; }
-.sim-select option { background:#1e293b; }
-.btn-accent { background:linear-gradient(90deg, #4f8ef7, #7c5cfc); border:none; color:#fff; border-radius:8px; padding:6px 14px; font-size:.8rem; font-weight:600; cursor:pointer; transition:opacity .15s; display:inline-flex; align-items:center; gap:6px; }
-.btn-accent:hover { opacity:.85; }
-.btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text-muted); border-radius:8px; padding:6px 14px; font-size:.8rem; cursor:pointer; transition:border-color .15s, color .15s; display:inline-flex; align-items:center; gap:6px; }
-.btn-ghost:hover { border-color:rgba(79,142,247,.4); color:#e2e8f0; }
+    /* ===== ACTION BAR ===== */
+    .action-bar {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.25rem; flex-wrap: wrap; margin-top: 2rem;
+    }
+    .action-bar h2 { font-size: 1.1rem; font-weight: 700; flex: 1; margin: 0; }
+    .selected-info { font-size: .82rem; color: #f59e0b; display: none; align-items: center; gap: .4rem; }
+    .selected-info.visible { display: flex; }
 
-/* bank logo chip */
-.bank-chip { display:inline-flex; align-items:center; gap:6px; }
-.bank-icon { width:24px; height:24px; border-radius:6px; background:#1e293b; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:.65rem; font-weight:700; }
+    .btn-action {
+      padding: .55rem 1.3rem; border: none; border-radius: 10px;
+      font-size: .85rem; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: .45rem;
+      transition: all .22s; white-space: nowrap;
+    }
+    .btn-tarik {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      color: #fff; box-shadow: 0 4px 18px rgba(245,158,11,.3);
+    }
+    .btn-tarik:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,.45); }
+    .btn-tarik:disabled { opacity: .35; cursor: not-allowed; transform: none; }
 
-/* amount */
-.amount-cell { font-size:.95rem; font-weight:700; }
+    .btn-tarik-all {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff; box-shadow: 0 4px 18px rgba(34,197,94,.25);
+    }
+    .btn-tarik-all:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,.4); }
+    .btn-tarik-all:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+    /* ===== TABLE CARDS ===== */
+    .table-card {
+      background: var(--bg-side); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden; margin-bottom: 2rem;
+    }
+    .table-card-head {
+      padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .6rem;
+    }
+
+    /* Tabs */
+    .tabs { display: flex; gap: .15rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: .65rem 1.3rem; background: none; border: none;
+      font-size: .88rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; position: relative;
+      transition: color .2s; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .tab-btn.active { color: #f59e0b; border-bottom-color: #f59e0b; }
+    .tab-btn .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%; font-size: .65rem; font-weight: 700;
+      margin-left: .4rem; background: rgba(245,158,11,.15); color: #f59e0b;
+    }
+
+    /* Modal & Overlay */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.visible { display: flex; }
+    .modal-box {
+      background: #0c1230; border: 1px solid var(--border);
+      border-radius: 18px; padding: 2rem; max-width: 420px; width: 90%;
+    }
+
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+      padding: 1rem 1.5rem; border-radius: 12px;
+      transform: translateY(120px); opacity: 0;
+      transition: all .35s; max-width: 360px; pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; pointer-events: all; }
+    #toast.success { background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
+    #toast.error   { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; }
+
+    .amount { font-weight: 700; color: #4ade80; }
+    .order-code { font-size: .73rem; color: #93c5fd; font-family: monospace; }
+    .platform-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .18rem .55rem; border-radius: 20px; font-size: .68rem; font-weight: 600;
+      background: rgba(79,142,247,.12); color: #4f8ef7;
+    }
+    #loading-overlay {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(7,9,26,.7); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; flex-direction: column; gap: 1rem;
+    }
+    #loading-overlay.visible { display: flex; }
+    .spinner {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 3px solid rgba(245,158,11,.2);
+      border-top-color: #f59e0b;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 
-<!-- Page Header -->
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" style="color:#f59e0b;font-weight:600">Memproses pencairan…</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-icon" style="font-size:2.5rem;margin-bottom:1rem">💰</div>
+    <div class="modal-title" id="modal-title" style="font-size:1.15rem;font-weight:800;margin-bottom:.5rem">Konfirmasi Pencairan Dana</div>
+    <div class="modal-desc" id="modal-desc" style="color:var(--text-muted);font-size:.88rem;line-height:1.65;margin-bottom:1.5rem">Apakah kamu yakin ingin mencairkan dana dari pesanan yang dipilih?</div>
+    <div class="modal-amount" id="modal-amount" style="font-size:1.35rem;font-weight:800;color:#f59e0b;margin: .5rem 0 1rem;"></div>
+    <div class="modal-actions" style="display:flex;gap:.75rem">
+      <button class="btn btn-outline-secondary flex-grow-1" id="modal-cancel">Batal</button>
+      <button class="btn btn-warning flex-grow-2" id="modal-confirm" style="font-weight:700">
+        <i class="bi bi-cash-stack"></i> Ya, Cairkan Sekarang
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="page-header">
-    <div>
-        <div class="page-title"><i class="bi bi-cash-coin"></i> Withdrawal</div>
-        <div class="page-subtitle">Riwayat & manajemen penarikan dana</div>
-    </div>
-    <div class="filter-bar">
-        <input class="sim-input" type="date">
-        <select class="sim-select"><option>Semua Status</option><option>Berhasil</option><option>Pending</option><option>Gagal</option></select>
-        <button class="btn-accent"><i class="bi bi-plus-lg"></i> Ajukan Withdrawal</button>
-    </div>
-</div>
-
-<!-- Stat Cards -->
-<div class="stat-grid">
-    <div class="stat-card">
-        <div class="stat-icon icon-green"><i class="bi bi-check-circle-fill"></i></div>
-        <div class="stat-value">Rp 24,5 Jt</div>
-        <div class="stat-label">Total Berhasil</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon icon-yellow"><i class="bi bi-hourglass-split"></i></div>
-        <div class="stat-value">Rp 3,2 Jt</div>
-        <div class="stat-label">Pending</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon icon-blue"><i class="bi bi-calendar-month"></i></div>
-        <div class="stat-value">Rp 6,7 Jt</div>
-        <div class="stat-label">Bulan Ini</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon icon-purple"><i class="bi bi-receipt"></i></div>
-        <div class="stat-value">48</div>
-        <div class="stat-label">Total Transaksi</div>
-    </div>
-</div>
-
-<!-- Table -->
-<div class="table-card">
-    <div class="table-card-header">
-        <span class="table-card-title"><i class="bi bi-cash-coin" style="color:var(--accent);margin-right:6px"></i>Riwayat Withdrawal</span>
-        <div class="filter-bar">
-            <button class="btn-ghost"><i class="bi bi-funnel"></i> Filter</button>
-            <button class="btn-ghost"><i class="bi bi-download"></i> Export</button>
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1">Dashboard Pencairan Dana</h1>
+            <p class="text-muted small">Kelola dan mencairkan dana dari pesanan yang sudah berstatus <strong>Selesai</strong>.</p>
+        </div>
+        <div class="header-actions">
+            <span class="badge bg-warning text-dark"><i class="bi bi-shield-lock-fill"></i> CEO ACCESS</span>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="sim-table">
-            <thead>
-                <tr>
-                    <th>No. Referensi</th>
-                    <th>Tanggal</th>
-                    <th>Penerima</th>
-                    <th>Bank / Akun</th>
-                    <th>Jumlah</th>
-                    <th>Biaya Admin</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $withdrawals = [
-                    ['WD-20250412-001','12 Apr 2025','Toko Bumbu Nusantara','BCA · ****4521','Rp 2.500.000','Rp 6.500','success','Berhasil'],
-                    ['WD-20250408-002','08 Apr 2025','Toko Bumbu Nusantara','BCA · ****4521','Rp 1.800.000','Rp 6.500','success','Berhasil'],
-                    ['WD-20250405-003','05 Apr 2025','Toko Bumbu Nusantara','Mandiri · ****7892','Rp 2.400.000','Rp 6.500','warning','Pending'],
-                    ['WD-20250331-004','31 Mar 2025','Toko Bumbu Nusantara','BCA · ****4521','Rp 3.200.000','Rp 6.500','success','Berhasil'],
-                    ['WD-20250325-005','25 Mar 2025','Toko Bumbu Nusantara','BNI · ****3317','Rp 900.000','Rp 6.500','danger','Gagal'],
-                    ['WD-20250318-006','18 Mar 2025','Toko Bumbu Nusantara','BCA · ****4521','Rp 1.500.000','Rp 6.500','success','Berhasil'],
-                ];
-                foreach ($withdrawals as $w): ?>
-                <tr>
-                    <td style="font-family:monospace;font-size:.78rem;color:#4f8ef7"><?= $w[0] ?></td>
-                    <td style="color:var(--text-muted)"><?= $w[1] ?></td>
-                    <td style="color:#e2e8f0;font-weight:500"><?= $w[2] ?></td>
-                    <td>
-                        <div class="bank-chip">
-                            <div class="bank-icon" style="color:#4f8ef7"><?= substr($w[3],0,3) ?></div>
-                            <span style="font-size:.8rem"><?= $w[3] ?></span>
-                        </div>
-                    </td>
-                    <td class="amount-cell" style="color:#4ade80"><?= $w[4] ?></td>
-                    <td style="color:var(--text-muted)"><?= $w[5] ?></td>
-                    <td><span class="badge-sim badge-<?= $w[6] ?>"><?= $w[7] ?></span></td>
-                    <td>
-                        <button class="btn-ghost" style="padding:4px 9px;font-size:.75rem"><i class="bi bi-eye"></i></button>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+</div>
+
+<!-- SUMMARY STATS -->
+<div class="row g-3 mb-4" id="stats-grid">
+    <div class="col-md-3">
+        <div class="stat-card card-gold">
+            <div class="sc-icon">⏳</div>
+            <div class="sc-val" id="stat-belum-val">—</div>
+            <div class="sc-subval" id="stat-belum-count">— pesanan</div>
+            <div class="sc-label">Belum Dicairkan</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card card-green">
+            <div class="sc-icon">✅</div>
+            <div class="sc-val" id="stat-sudah-val">—</div>
+            <div class="sc-subval" id="stat-sudah-count">— pesanan</div>
+            <div class="sc-label">Sudah Dicairkan</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card card-purple">
+            <div class="sc-icon">📦</div>
+            <div class="sc-val" id="stat-total-order">—</div>
+            <div class="sc-subval">order selesai</div>
+            <div class="sc-label">Total Pesanan Selesai</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card card-blue">
+            <div class="sc-icon">💵</div>
+            <div class="sc-val" id="stat-total-rev">—</div>
+            <div class="sc-subval">kumulatif</div>
+            <div class="sc-label">Total Pendapatan</div>
+        </div>
     </div>
 </div>
 
+<!-- TABS -->
+<div class="tabs">
+    <button class="tab-btn active" data-tab="pending" onclick="switchTab('pending')">
+        Belum Dicairkan <span class="tab-count" id="tab-count-pending">0</span>
+    </button>
+    <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+        Riwayat Terakhir
+    </button>
+</div>
+
+<!-- TAB: PENDING -->
+<div id="tab-pending">
+    <div class="action-bar">
+        <h2><i class="bi bi-hourglass-split" style="color:#f59e0b"></i> Antrian Pencairan</h2>
+        <span class="selected-info" id="selected-info">
+            <i class="bi bi-check-circle-fill"></i>
+            <span id="selected-count">0</span> dipilih ·
+            <strong id="selected-amount">Rp 0</strong>
+        </span>
+        <button class="btn btn-sm btn-outline-info" id="btn-refresh" onclick="loadData()">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+        <button class="btn btn-sm btn-warning" id="btn-tarik-selected" disabled onclick="confirmTarik(false)">
+            <i class="bi bi-cash-coin"></i> Cairkan Dipilih
+        </button>
+        <button class="btn btn-sm btn-success" id="btn-tarik-all" onclick="confirmTarik(true)">
+            <i class="bi bi-cash-stack"></i> Cairkan Semua
+        </button>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-head d-flex align-items-center">
+            <i class="bi bi-list-check" style="color:#f59e0b;margin-right:8px"></i>
+            <strong style="font-size:.85rem">Belum Dicairkan</strong>
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <input type="checkbox" id="check-all" title="Pilih Semua">
+                <label for="check-all" class="text-muted small mb-0" style="cursor:pointer">Pilih Semua</label>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0" style="font-size:.82rem">
+                <thead>
+                    <tr>
+                        <th style="width:40px"></th>
+                        <th>Order ID</th>
+                        <th>Platform</th>
+                        <th>Tanggal Pesanan</th>
+                        <th>Tanggal Bayar</th>
+                        <th>Total Dana (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody id="pending-tbody">
+                    <tr><td colspan="6" class="text-center py-5 text-muted">Memuat data…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: HISTORY -->
+<div id="tab-history" style="display:none">
+    <div class="table-card">
+        <div class="table-card-head">
+            <i class="bi bi-clock-history" style="color:#22c55e;margin-right:8px"></i>
+            <strong style="font-size:.85rem">10 Pencairan Terakhir</strong>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0" style="font-size:.82rem">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Platform</th>
+                        <th>Tanggal Bayar</th>
+                        <th>Dana (Rp)</th>
+                        <th>Terakhir Update</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody">
+                    <tr><td colspan="6" class="text-center py-5 text-muted">Memuat riwayat…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
+<script>
+let allPending = [];
+let selectedIds = new Set();
+let pendingConfirmFn = null;
+
+function esc(t) { return String(t).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function fmt(v) { return 'Rp ' + parseFloat(v||0).toLocaleString('id-ID'); }
+function fmtK(v) { 
+  v = parseFloat(v||0);
+  if(v >= 1000000) return 'Rp ' + (v/1000000).toFixed(1) + ' Jt';
+  return fmt(v);
+}
+function fmtDt(s) { return s ? new Date(s).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.getElementById('tab-pending').style.display  = name === 'pending'  ? '' : 'none';
+  document.getElementById('tab-history').style.display  = name === 'history'  ? '' : 'none';
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.className = 'show ' + type;
+  t.textContent = msg;
+  setTimeout(() => { t.className = ''; }, 3500);
+}
+
+function setLoading(visible, text = 'Memproses pencairan…') {
+  document.querySelector('#loading-overlay .loading-text').textContent = text;
+  document.getElementById('loading-overlay').classList.toggle('visible', visible);
+}
+
+function renderSummary(s) {
+  document.getElementById('stat-belum-val').textContent   = fmtK(s.total_belum_ditarik);
+  document.getElementById('stat-belum-count').textContent = (s.jumlah_pending || 0) + ' pesanan';
+  document.getElementById('stat-sudah-val').textContent   = fmtK(s.total_sudah_ditarik);
+  document.getElementById('stat-sudah-count').textContent = (s.jumlah_ditarik || 0) + ' pesanan';
+  document.getElementById('stat-total-order').textContent = (s.total_selesai || 0).toLocaleString('id-ID');
+  document.getElementById('stat-total-rev').textContent   = fmtK(s.total_pendapatan);
+}
+
+function updateSelectedUI() {
+  const infoEl = document.getElementById('selected-info');
+  const btnTarikSel = document.getElementById('btn-tarik-selected');
+  const count = selectedIds.size;
+  if (count > 0) {
+    const total = allPending.filter(r => selectedIds.has(r.order_id)).reduce((a, r) => a + parseFloat(r.total_amount || 0), 0);
+    document.getElementById('selected-count').textContent = count;
+    document.getElementById('selected-amount').textContent = fmt(total);
+    infoEl.classList.add('visible');
+    btnTarikSel.disabled = false;
+  } else {
+    infoEl.classList.remove('visible');
+    btnTarikSel.disabled = true;
+  }
+}
+
+function onRowCheck(orderId, checked) {
+  if (checked) selectedIds.add(orderId); else selectedIds.delete(orderId);
+  document.getElementById('check-all').indeterminate = selectedIds.size > 0 && selectedIds.size < allPending.length;
+  document.getElementById('check-all').checked = selectedIds.size === allPending.length && allPending.length > 0;
+  updateSelectedUI();
+}
+
+function renderPending(rows) {
+  allPending = rows;
+  selectedIds.clear();
+  updateSelectedUI();
+  const tbody = document.getElementById('pending-tbody');
+  document.getElementById('tab-count-pending').textContent = rows.length;
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5">🎉 Semua pesanan sudah dicairkan!</td></tr>`;
+    document.getElementById('btn-tarik-all').disabled = true;
+    return;
+  }
+  document.getElementById('btn-tarik-all').disabled = false;
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><input type="checkbox" class="row-check" data-id="${esc(r.order_id)}"></td>
+      <td><code class="order-code">${esc(r.order_id)}</code></td>
+      <td><span class="platform-badge"><i class="bi bi-tiktok"></i> ${esc(r.platform)}</span></td>
+      <td>${fmtDt(r.create_time)}</td>
+      <td>${fmtDt(r.paid_time)}</td>
+      <td class="amount">${fmt(r.total_amount)}</td>
+    </tr>`).join('');
+
+  tbody.querySelectorAll('.row-check').forEach(cb => {
+    cb.addEventListener('change', () => onRowCheck(cb.dataset.id, cb.checked));
+  });
+}
+
+function renderHistory(rows) {
+  const tbody = document.getElementById('history-tbody');
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5">Belum ada riwayat.</td></tr>`; return; }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><code class="order-code">${esc(r.order_id)}</code></td>
+      <td><span class="platform-badge"><i class="bi bi-tiktok"></i> ${esc(r.platform)}</span></td>
+      <td>${fmtDt(r.paid_time)}</td>
+      <td class="amount">${fmt(r.total_amount)}</td>
+      <td class="text-muted" style="font-size:0.7rem">${fmtDt(r.tanggal_update)}</td>
+      <td><button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="resetOne('${esc(r.order_id)}')">Batal</button></td>
+    </tr>`).join('');
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch('<?= base_url('/withdrawal/data') ?>', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    const data = await resp.json();
+    if (!data.success) throw new Error(data.error);
+    renderSummary(data.summary || {});
+    renderPending(data.pending || []);
+    renderHistory(data.history || []);
+  } catch (e) { showToast('Gagal memuat: ' + e.message, 'error'); }
+}
+
+function confirmTarik(tarikSemua) {
+  const modal = document.getElementById('confirm-modal');
+  const amountEl = document.getElementById('modal-amount');
+  if (tarikSemua) {
+    const totalAmt = allPending.reduce((a, r) => a + parseFloat(r.total_amount||0), 0);
+    document.getElementById('modal-title').textContent = 'Cairkan Semua Dana Pending';
+    document.getElementById('modal-desc').textContent = `Menandai semua ${allPending.length} pesanan sebagai "Sudah Dicairkan".`;
+    amountEl.textContent = fmt(totalAmt);
+    pendingConfirmFn = () => executeTarik(true, []);
+  } else {
+    const ids = [...selectedIds];
+    const amt = allPending.filter(r => ids.includes(r.order_id)).reduce((a, r) => a + parseFloat(r.total_amount||0), 0);
+    document.getElementById('modal-title').textContent = `Cairkan ${ids.length} Pesanan`;
+    document.getElementById('modal-desc').textContent = `Konfirmasi pencairan untuk ${ids.length} pesanan terpilih.`;
+    amountEl.textContent = fmt(amt);
+    pendingConfirmFn = () => executeTarik(false, ids);
+  }
+  modal.classList.add('visible');
+}
+
+async function executeTarik(tarikSemua, orderIds) {
+  setLoading(true);
+  try {
+    const body = tarikSemua ? { tarik_semua: true } : { order_ids: orderIds };
+    const resp = await fetch('<?= base_url('/withdrawal/tarik') ?>', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (!data.success) throw new Error(data.error);
+    showToast(data.message, 'success');
+    await loadData();
+  } catch (e) { showToast('Gagal: ' + e.message, 'error'); } finally { setLoading(false); }
+}
+
+document.getElementById('modal-cancel').onclick = () => document.getElementById('confirm-modal').classList.remove('visible');
+document.getElementById('modal-confirm').onclick = () => { document.getElementById('confirm-modal').classList.remove('visible'); if(pendingConfirmFn) pendingConfirmFn(); };
+
+document.getElementById('check-all').onchange = (e) => {
+  const checked = e.target.checked;
+  allPending.forEach(r => { if(checked) selectedIds.add(r.order_id); else selectedIds.delete(r.order_id); });
+  document.querySelectorAll('.row-check').forEach(cb => cb.checked = checked);
+  updateSelectedUI();
+};
+
+loadData();
+</script>
 <?= $this->endSection() ?>

@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Models\TransaksiKasModel;
+
 class Withdrawal extends BaseController
 {
     // -------------------------------------------------------
-    // GET /withdrawal  — Halaman Dashboard Penarikan (CEO)
+    // GET /withdrawal  — Halaman Dashboard Pencairan (CEO)
     // -------------------------------------------------------
     public function index(): string
     {
@@ -46,7 +48,7 @@ class Withdrawal extends BaseController
             LIMIT 200
         ")->getResultArray();
 
-        // Riwayat penarikan terbaru (10 terakhir)
+        // Riwayat pencairan terbaru (10 terakhir)
         $history = $db->query("
             SELECT order_id, platform, total_amount, paid_time, tanggal_update
             FROM transaksi_pesanan
@@ -74,53 +76,79 @@ class Withdrawal extends BaseController
             return $this->response->setStatusCode(403)->setJSON(['success' => false, 'error' => 'Forbidden']);
         }
 
-        $body = $this->request->getJSON(true) ?? [];
-        $db   = \Config\Database::connect();
+        $body     = $this->request->getJSON(true) ?? [];
+        $db       = \Config\Database::connect();
+        $kasModel = new TransaksiKasModel();
+
+        // Mulai Transaksi Database agar sinkronisasi aman
+        $db->transStart();
+
+        $whereClause = "";
+        $params      = [];
 
         if (!empty($body['tarik_semua'])) {
-            // Tandai SEMUA order selesai & belum ditarik
-            $affected = $db->query("
-                UPDATE transaksi_pesanan
-                SET status_penarikan = 'Sudah Ditarik'
-                WHERE status_pesanan = 'Selesai'
-                  AND status_penarikan = 'Belum Ditarik'
-            ");
-            $count = $db->affectedRows();
+            $whereClause = "status_pesanan = 'Selesai' AND status_penarikan = 'Belum Ditarik'";
+        } else {
+            $orderIds = $body['order_ids'] ?? [];
+            if (empty($orderIds) || !is_array($orderIds)) {
+                return $this->response->setJSON(['success' => false, 'error' => 'Tidak ada order_id yang dikirim.']);
+            }
 
-            return $this->response->setJSON([
-                'success'  => true,
-                'message'  => "Berhasil menarik {$count} pesanan sekaligus.",
-                'affected' => $count,
-            ]);
+            $orderIds     = array_values(array_filter(array_map(fn($id) => preg_replace('/[^A-Za-z0-9\-_]/', '', $id), $orderIds)));
+            $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
+            
+            $whereClause = "order_id IN ({$placeholders}) AND status_pesanan = 'Selesai' AND status_penarikan = 'Belum Ditarik'";
+            $params      = $orderIds;
         }
 
-        $orderIds = $body['order_ids'] ?? [];
-        if (empty($orderIds) || !is_array($orderIds)) {
-            return $this->response->setJSON(['success' => false, 'error' => 'Tidak ada order_id yang dikirim.']);
+        // 1. Ambil data agregat (Total Uang & Jumlah Pesanan) per Platform
+        $agregat = $db->query("
+            SELECT platform, SUM(total_amount) as nominal_total, COUNT(*) as jumlah_pesanan
+            FROM transaksi_pesanan
+            WHERE {$whereClause}
+            GROUP BY platform
+        ", $params)->getResultArray();
+
+        if (empty($agregat)) {
+            $db->transRollback();
+            return $this->response->setJSON(['success' => false, 'error' => 'Tidak ada data pesanan valid yang bisa dicairkan.']);
         }
 
-        // Sanitasi: hanya karakter alfanumerik dan strip, re-index dengan array_values
-        $orderIds = array_values(array_filter(array_map(fn($id) => preg_replace('/[^A-Za-z0-9\-_]/', '', $id), $orderIds)));
-
-        if (empty($orderIds)) {
-            return $this->response->setJSON(['success' => false, 'error' => 'Order ID tidak valid.']);
-        }
-
-        $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
+        // 2. Tandai Order sebagai 'Sudah Ditarik'
         $db->query("
             UPDATE transaksi_pesanan
             SET status_penarikan = 'Sudah Ditarik'
-            WHERE order_id IN ({$placeholders})
-              AND status_pesanan = 'Selesai'
-              AND status_penarikan = 'Belum Ditarik'
-        ", $orderIds);
+            WHERE {$whereClause}
+        ", $params);
+        $totalAffected = $db->affectedRows();
 
-        $affected = $db->affectedRows();
+        // 3. Catat ke Tabel Kas (Pemasukan) per Platform
+        foreach ($agregat as $row) {
+            $platform    = $row['platform'] ?: 'Lainnya';
+            $nominal     = (float)$row['nominal_total'];
+            $jmlPesanan  = $row['jumlah_pesanan'];
+
+            if ($nominal > 0) {
+                $kasModel->save([
+                    'tanggal'        => date('Y-m-d'),
+                    'tipe_transaksi' => 'Pemasukan',
+                    'kategori'       => "Hasil Penjualan " . $platform,
+                    'keterangan'     => "Pencairan otomatis dari Dashboard CEO (Total " . $jmlPesanan . " pesanan).",
+                    'nominal'        => $nominal
+                ]);
+            }
+        }
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->response->setJSON(['success' => false, 'error' => 'Gagal memproses pencairan dan pencatatan kas.']);
+        }
 
         return $this->response->setJSON([
             'success'  => true,
-            'message'  => "Berhasil menandai {$affected} pesanan sebagai Sudah Ditarik.",
-            'affected' => $affected,
+            'message'  => "Berhasil mencairkan {$totalAffected} pesanan. Data kas otomatis diperbarui.",
+            'affected' => $totalAffected,
         ]);
     }
 
@@ -156,7 +184,7 @@ class Withdrawal extends BaseController
 
         return $this->response->setJSON([
             'success'  => true,
-            'message'  => "Berhasil membatalkan {$affected} penarikan.",
+            'message'  => "Berhasil membatalkan {$affected} pencairan.",
             'affected' => $affected,
         ]);
     }

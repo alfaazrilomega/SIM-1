@@ -247,7 +247,7 @@
         <a href="<?= base_url('/withdrawal') ?>"
            class="<?= str_contains(uri_string(), 'withdrawal') ? 'active' : '' ?>">
             <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>
-            Withdrawal
+            Pencairan
         </a>
 
     </nav>
