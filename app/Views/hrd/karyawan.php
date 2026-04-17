@@ -1,32 +1,17 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>SIM — Data Karyawan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #07091a; --bg-card: #0c1230; --bg-card2: #111a3e;
-      --border: rgba(100,149,255,.13); --accent: #4f8ef7; --success: #22c55e; --danger: #ef4444; --text: #e2e8f0; --muted: #5a6a8a;
-    }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; font-size: 14px; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+<?= $this->extend('layout/template') ?>
+
+<?= $this->section('css') ?>
+<style>
     .nav { margin-bottom: 2rem; display: flex; gap: 10px; }
     .nav a { padding: 10px 15px; background: var(--bg-card); color: var(--accent); text-decoration: none; border-radius: 8px; border: 1px solid var(--border); }
     .nav a:hover, .nav a.active { background: var(--accent); color: white; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: var(--bg-card2); }
-    input, button { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card2); color: white; margin-bottom:10px; width: 100%; }
-    button { background: var(--accent); cursor: pointer; font-weight: bold; border: none; }
     .btn-edit { background: var(--bg-card2); color: var(--accent); border: 1px solid var(--accent); padding: 4px 8px; font-size: 12px; margin-right: 5px; text-decoration: none; border-radius: 4px; }
     .btn-delete { background: var(--bg-card2); color: var(--danger); border: 1px solid var(--danger); padding: 4px 8px; font-size: 12px; text-decoration: none; border-radius: 4px; }
-    .alert-success { background: rgba(34,197,94,.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
     .grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px;}
-  </style>
-</head>
-<body>
+</style>
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
 
 <div class="nav">
   <a href="<?= base_url('/hrd/karyawan') ?>" class="active">👥 Data Karyawan</a>
@@ -94,6 +79,9 @@
   </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
 <script>
 function editKaryawan(data) {
     document.getElementById('form-title').innerText = 'Edit Karyawan';
@@ -115,5 +103,4 @@ function resetForm() {
 }
 </script>
 
-</body>
-</html>
+<?= $this->endSection() ?>

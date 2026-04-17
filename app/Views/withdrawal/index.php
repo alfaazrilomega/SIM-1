@@ -34,26 +34,6 @@
     .selected-info { font-size: .82rem; color: #f59e0b; display: none; align-items: center; gap: .4rem; }
     .selected-info.visible { display: flex; }
 
-    .btn-action {
-      padding: .55rem 1.3rem; border: none; border-radius: 10px;
-      font-size: .85rem; font-weight: 700; cursor: pointer;
-      display: inline-flex; align-items: center; gap: .45rem;
-      transition: all .22s; white-space: nowrap;
-    }
-    .btn-tarik {
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-      color: #fff; box-shadow: 0 4px 18px rgba(245,158,11,.3);
-    }
-    .btn-tarik:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,.45); }
-    .btn-tarik:disabled { opacity: .35; cursor: not-allowed; transform: none; }
-
-    .btn-tarik-all {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff; box-shadow: 0 4px 18px rgba(34,197,94,.25);
-    }
-    .btn-tarik-all:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,.4); }
-    .btn-tarik-all:disabled { opacity: .35; cursor: not-allowed; transform: none; }
-
     /* ===== TABLE CARDS ===== */
     .table-card {
       background: var(--bg-side); border: 1px solid var(--border);

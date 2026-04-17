@@ -1,238 +1,131 @@
 <?= $this->extend('layouts/main') ?>
+
 <?= $this->section('content') ?>
 
 <style>
-/* ── PAGE STYLES ── */
-.page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-.page-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.page-title i {
-    color: var(--accent);
-}
-.page-subtitle {
-    font-size: .8rem;
-    color: var(--text-muted);
-    margin-top: 2px;
-}
+    :root {
+      --bg-dash:   #0f172a;
+      --bg-card:   #1e293b;
+      --border-sim:rgba(255,255,255,0.08);
+      --accent:    #3b82f6;
+      --accent2:   #6366f1;
+      --success:   #10b981;
+      --warning:   #f59e0b;
+      --danger:    #ef4444;
+      --text-main: #f1f5f9;
+      --text-muted:#94a3b8;
+    }
 
-/* ── STAT CARDS ── */
-.stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
-}
-.stat-card {
-    background: #0f172a;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color .2s, transform .2s;
-}
-.stat-card:hover {
-    border-color: rgba(79,142,247,.4);
-    transform: translateY(-2px);
-}
-.stat-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(79,142,247,.04), rgba(124,92,252,.04));
-}
-.stat-card .stat-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    margin-bottom: 14px;
-}
-.stat-card .stat-value {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    line-height: 1;
-    margin-bottom: 4px;
-}
-.stat-card .stat-label {
-    font-size: .75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-}
-.stat-card .stat-change {
-    position: absolute;
-    top: 20px; right: 20px;
-    font-size: .72rem;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 20px;
-}
-.change-up   { background: rgba(34,197,94,.12); color: #4ade80; }
-.change-down { background: rgba(239,68,68,.12);  color: #f87171; }
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+    .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-sim);
+        border-radius: 14px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color .2s, transform .2s;
+    }
+    .stat-card:hover {
+        border-color: rgba(79,142,247,.4);
+        transform: translateY(-2px);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(79,142,247,.08), transparent 70%);
+    }
+    .stat-card .stat-icon {
+        width: 40px; height: 40px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.15rem;
+        margin-bottom: 14px;
+    }
+    .stat-card .stat-value {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .stat-card .stat-label {
+        font-size: .75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+    .stat-card .stat-change {
+        position: absolute;
+        top: 20px; right: 20px;
+        font-size: .72rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 20px;
+    }
+    .change-up   { background: rgba(34,197,94,.12); color: #4ade80; }
+    .change-down { background: rgba(239,68,68,.12);  color: #f87171; }
 
-/* icon colors */
-.icon-blue   { background: rgba(79,142,247,.15); color: #4f8ef7; }
-.icon-purple { background: rgba(124,92,252,.15); color: #7c5cfc; }
-.icon-yellow { background: rgba(250,204,21,.15); color: #facc15; }
-.icon-green  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .icon-blue   { background: rgba(59,130,246,.15); color: #3b82f6; }
+    .icon-purple { background: rgba(99,102,241,.15); color: #6366f1; }
+    .icon-yellow { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .icon-green  { background: rgba(16,185,129,.15); color: #10b981; }
 
-/* ── TABLE CARD ── */
-.table-card {
-    background: #0f172a;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-.table-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.table-card-title {
-    font-size: .9rem;
-    font-weight: 600;
-    color: #e2e8f0;
-}
-.table-responsive { overflow-x: auto; }
-.sim-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .83rem;
-}
-.sim-table thead tr {
-    background: #020617;
-}
-.sim-table thead th {
-    padding: 11px 16px;
-    text-align: left;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: .72rem;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-}
-.sim-table tbody tr {
-    border-bottom: 1px solid rgba(30,41,59,.6);
-    transition: background .15s;
-}
-.sim-table tbody tr:last-child { border-bottom: none; }
-.sim-table tbody tr:hover { background: rgba(79,142,247,.04); }
-.sim-table tbody td {
-    padding: 11px 16px;
-    color: #cbd5e1;
-    vertical-align: middle;
-}
+    .chart-row { display: grid; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .chart-row.col-2    { grid-template-columns: 1fr 1fr; }
+    .chart-row.col-3    { grid-template-columns: 2fr 1fr; }
+    @media(max-width:992px) { .chart-row.col-2, .chart-row.col-3 { grid-template-columns: 1fr; } }
 
-/* badge */
-.badge-sim {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: .7rem;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 20px;
-}
-.badge-success { background: rgba(34,197,94,.12); color: #4ade80; border: 1px solid rgba(34,197,94,.2); }
-.badge-warning { background: rgba(250,204,21,.12); color: #facc15; border: 1px solid rgba(250,204,21,.2); }
-.badge-danger  { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--border-sim); border-radius: 14px; overflow: hidden; }
+    .chart-head {
+      padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border-sim);
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .chart-head h3 { font-size: .95rem; font-weight: 700; flex: 1; margin: 0; color: var(--text-main); }
+    .chart-body { padding: 1.5rem; }
 
-/* filter bar */
-.filter-bar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.sim-select, .sim-input {
-    background: #1e293b;
-    border: 1px solid var(--border);
-    color: #e2e8f0;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: .8rem;
-    outline: none;
-    transition: border-color .15s;
-}
-.sim-select:focus, .sim-input:focus {
-    border-color: rgba(79,142,247,.5);
-}
-.sim-select option { background: #1e293b; }
-
-.btn-accent {
-    background: linear-gradient(90deg, #4f8ef7, #7c5cfc);
-    border: none;
-    color: #fff;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: .8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.btn-accent:hover { opacity: .85; }
-
-.btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: .8rem;
-    cursor: pointer;
-    transition: border-color .15s, color .15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.btn-ghost:hover { border-color: rgba(79,142,247,.4); color: #e2e8f0; }
+    .sim-table {
+        width: 100%; border-collapse: collapse; font-size: .85rem;
+    }
+    .sim-table thead th {
+        padding: 12px 16px; text-align: left;
+        color: var(--text-muted); font-size: .72rem;
+        text-transform: uppercase; letter-spacing: .06em;
+        border-bottom: 1px solid var(--border-sim); background: rgba(0,0,0,0.1);
+    }
+    .sim-table tbody td {
+        padding: 14px 16px; color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .badge-sim {
+        padding: 3px 10px; border-radius: 20px; font-size: .7rem; font-weight: 700;
+    }
+    .badge-success { background: rgba(16,185,129,0.15); color: #34d399; }
+    .badge-warning { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .badge-danger  { background: rgba(239,68,68,0.15); color: #f87171; }
 </style>
 
-<!-- Page Header -->
-<div class="page-header">
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
     <div>
-        <div class="page-title">
-            <i class="bi bi-bar-chart-fill"></i>
-            Analytics
-        </div>
-        <div class="page-subtitle">Ringkasan performa penjualan & produk</div>
+        <h1 class="h3 mb-1"><i class="bi bi-bar-chart-fill text-primary"></i> Business Analytics</h1>
+        <p class="text-muted small">Ringkasan performa penjualan & distribusi produk periode ini.</p>
     </div>
-    <div class="filter-bar">
-        <select class="sim-select">
+    <div class="header-actions d-flex gap-2">
+        <select class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;">
             <option>Bulan Ini</option>
-            <option>3 Bulan</option>
-            <option>6 Bulan</option>
+            <option>3 Bulan Terakhir</option>
             <option>Tahun Ini</option>
         </select>
-        <button class="btn-accent"><i class="bi bi-download"></i> Export</button>
+        <button class="btn btn-sm btn-primary"><i class="bi bi-download"></i> Export Reports</button>
     </div>
 </div>
 
-<!-- Stat Cards -->
+<!-- STAT CARDS -->
 <div class="stat-grid">
     <div class="stat-card">
         <span class="stat-change change-up">+12.4%</span>
@@ -244,33 +137,54 @@
         <span class="stat-change change-up">+8.1%</span>
         <div class="stat-icon icon-purple"><i class="bi bi-box-seam-fill"></i></div>
         <div class="stat-value">1.348</div>
-        <div class="stat-label">Total Produk Terjual</div>
+        <div class="stat-label">Produk Terjual</div>
     </div>
     <div class="stat-card">
         <span class="stat-change change-down">-2.3%</span>
         <div class="stat-icon icon-yellow"><i class="bi bi-cash-coin"></i></div>
         <div class="stat-value">Rp 6,7 Jt</div>
-        <div class="stat-label">Total Withdrawal</div>
+        <div class="stat-label">Total Pencairan</div>
     </div>
     <div class="stat-card">
         <span class="stat-change change-up">+5.6%</span>
         <div class="stat-icon icon-green"><i class="bi bi-jar-fill"></i></div>
         <div class="stat-value">24</div>
-        <div class="stat-label">Varian Produk Aktif</div>
+        <div class="stat-label">Varian Aktif</div>
     </div>
 </div>
 
-<!-- Table -->
-<div class="table-card">
-    <div class="table-card-header">
-        <span class="table-card-title"><i class="bi bi-list-ul" style="color:var(--accent);margin-right:6px"></i>Top Produk Bulan Ini</span>
-        <button class="btn-ghost"><i class="bi bi-funnel"></i> Filter</button>
+<div class="chart-row col-2">
+    <div class="chart-card">
+        <div class="chart-head">
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            <h3>Tren Penjualan Harian</h3>
+        </div>
+        <div class="chart-body">
+            <canvas id="salesChart" height="280"></canvas>
+        </div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-head">
+            <i class="bi bi-pie-chart-fill text-info"></i>
+            <h3>Komposisi Platform</h3>
+        </div>
+        <div class="chart-body">
+            <canvas id="platformChart" height="280"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- TABLE SECTION -->
+<div class="chart-card mt-4">
+    <div class="chart-head">
+        <i class="bi bi-award-fill text-primary"></i>
+        <h3>Top Produk Terlaris</h3>
     </div>
     <div class="table-responsive">
         <table class="sim-table">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style="width: 50px">#</th>
                     <th>Nama Produk</th>
                     <th>Kategori</th>
                     <th>Qty Terjual</th>
@@ -289,11 +203,11 @@
                 ];
                 foreach ($rows as $i => $r): ?>
                 <tr>
-                    <td style="color:var(--text-muted)"><?= $i+1 ?></td>
-                    <td style="color:#e2e8f0;font-weight:500"><?= $r[0] ?></td>
-                    <td><span class="badge-sim badge-warning"><?= $r[1] ?></span></td>
+                    <td><?= $i+1 ?></td>
+                    <td class="fw-bold"><?= $r[0] ?></td>
+                    <td><span class="badge bg-secondary opacity-75 fw-normal" style="font-size: .65rem;"><?= $r[1] ?></span></td>
                     <td><?= $r[2] ?></td>
-                    <td style="color:#4ade80;font-weight:600"><?= $r[3] ?></td>
+                    <td class="text-success fw-bold"><?= $r[3] ?></td>
                     <td><span class="badge-sim badge-<?= $r[4] ?>"><?= $r[5] ?></span></td>
                 </tr>
                 <?php endforeach; ?>
@@ -302,4 +216,62 @@
     </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Sales Chart
+    const ctxSales = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctxSales, {
+        type: 'line',
+        data: {
+            labels: ['01 Apr','05 Apr','10 Apr','15 Apr','20 Apr','25 Apr','30 Apr'],
+            datasets: [{
+                label: 'Penjualan (Jt)',
+                data: [12, 19, 15, 25, 22, 30, 48],
+                borderColor: '#4f8ef7',
+                backgroundColor: 'rgba(79,142,247,0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+
+    // Platform Chart
+    const ctxPlat = document.getElementById('platformChart').getContext('2d');
+    new Chart(ctxPlat, {
+        type: 'doughnut',
+        data: {
+            labels: ['TikTok Shop','Tokopedia','Shopee','Manual'],
+            datasets: [{
+                data: [65, 15, 10, 10],
+                backgroundColor: ['#4f8ef7','#7c5cfc','#facc15','#10b981'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { 
+                    position: 'bottom',
+                    labels: { color: '#94a3b8', font: { size: 11 }, usePointStyle: true, padding: 20 }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
 <?= $this->endSection() ?>

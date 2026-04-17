@@ -8,10 +8,19 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 // =============================================
-// Import Excel — TikTok OrderSKUList
+// Import Excel — TikTok OrderSKUList (Marketplace)
 // =============================================
 $routes->get('/import', 'Import::index');
 $routes->post('/import/process', 'Import::process');
+
+// =============================================
+// Omnichannel Pemasukan (POS, Reseller, Maklon)
+// =============================================
+$routes->group('pemasukan', function ($routes) {
+    $routes->get('/', 'Pemasukan::index');
+    $routes->post('store-manual', 'Pemasukan::storeManual');
+    $routes->post('store-mitra', 'Pemasukan::storeMitra');
+});
 
 // =============================================
 // Withdrawal Dashboard (CEO)

@@ -1,35 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>SIM — Penggajian Karyawan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #07091a; --bg-card: #0c1230; --bg-card2: #111a3e;
-      --border: rgba(100,149,255,.13); --accent: #4f8ef7; --success: #22c55e; --warning: #f59e0b;
-      --text: #e2e8f0; --muted: #5a6a8a;
-    }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; font-size: 14px; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+<?= $this->extend('layout/template') ?>
+
+<?= $this->section('css') ?>
+<style>
     .nav { margin-bottom: 2rem; display: flex; gap: 10px; }
     .nav a { padding: 10px 15px; background: var(--bg-card); color: var(--accent); text-decoration: none; border-radius: 8px; border: 1px solid var(--border); }
     .nav a:hover, .nav a.active { background: var(--accent); color: white; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: var(--bg-card2); }
-    input, select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card2); color: white; margin-bottom:10px; width: 100%; }
-    button { background: var(--accent); cursor: pointer; font-weight: bold; border: none; }
     .btn-pay { background: var(--success); display: inline-block; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: white; font-size: 12px;}
-    .alert-success { background: rgba(34,197,94,.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-    .alert-error { background: rgba(239,68,68,.1); border: 1px solid #ef4444; color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
     .grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px;}
     .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
     .badge-pending { background: rgba(245,158,11,.15); color: var(--warning); border: 1px solid var(--warning); }
     .badge-paid { background: rgba(34,197,94,.15); color: var(--success); border: 1px solid var(--success); }
-  </style>
-</head>
-<body>
+    .alert-error { background: rgba(239,68,68,.1); border: 1px solid #ef4444; color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+</style>
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
 
 <div class="nav">
   <a href="<?= base_url('/hrd/karyawan') ?>">👥 Data Karyawan</a>
@@ -106,5 +91,4 @@
   </div>
 </div>
 
-</body>
-</html>
+<?= $this->endSection() ?>
