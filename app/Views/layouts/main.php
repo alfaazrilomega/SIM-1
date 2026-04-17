@@ -250,6 +250,26 @@
             Withdrawal
         </a>
 
+        <a href="<?= base_url('/finance/pengeluaran') ?>"
+           class="<?= str_contains(uri_string(), 'finance/pengeluaran') ? 'active' : '' ?>">
+            <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
+            Kas Ledger
+        </a>
+
+        <div class="nav-label">HRD Portal</div>
+
+        <a href="<?= base_url('/hrd/karyawan') ?>"
+           class="<?= str_contains(uri_string(), 'hrd/karyawan') ? 'active' : '' ?>">
+            <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
+            Data Karyawan
+        </a>
+
+        <a href="<?= base_url('/hrd/penggajian') ?>"
+           class="<?= str_contains(uri_string(), 'hrd/penggajian') ? 'active' : '' ?>">
+            <span class="nav-icon"><i class="bi bi-envelope-paper-fill"></i></span>
+            Penggajian
+        </a>
+
     </nav>
 
     <div class="sidebar-footer">
