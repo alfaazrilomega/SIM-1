@@ -1,4 +1,4 @@
-<?= $this->extend('layout/template') ?>
+<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <h1>💰 Dashboard Finance & Ledger Operational</h1>

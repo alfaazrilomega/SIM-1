@@ -5,9 +5,10 @@
 <style>
     /* ===== VARIABLES & STAT CARDS ===== */
     .stat-card {
-      background: var(--bg-side); border: 1px solid var(--border);
+      background: #ffffff; border: 1px solid var(--border);
       border-radius: 14px; padding: 1.5rem 1.4rem;
       position: relative; overflow: hidden; transition: all .25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     .stat-card:hover { border-color: rgba(79,142,247,.28); transform: translateY(-2px); }
     .stat-card::before {
@@ -15,13 +16,13 @@
       background: radial-gradient(circle at top right, var(--glow, rgba(79,142,247,.06)), transparent 65%);
       pointer-events: none;
     }
-    .stat-card.card-gold   { --glow: rgba(245,158,11,.08); }
-    .stat-card.card-green  { --glow: rgba(34,197,94,.07); }
-    .stat-card.card-purple { --glow: rgba(124,92,252,.07); }
-    .stat-card.card-blue   { --glow: rgba(79,142,247,.07); }
+    .stat-card.card-gold   { border-left: 4px solid #f59e0b; background: rgba(245,158,11,0.02); }
+    .stat-card.card-green  { border-left: 4px solid #10b981; background: rgba(16,185,129,0.02); }
+    .stat-card.card-purple { border-left: 4px solid #8b5cf6; background: rgba(139,92,246,0.02); }
+    .stat-card.card-blue   { border-left: 4px solid #3b82f6; background: rgba(59,130,246,0.02); }
 
     .sc-icon { font-size: 1.5rem; margin-bottom: .75rem; }
-    .sc-val  { font-size: 1.55rem; font-weight: 800; line-height: 1.1; color: #fff; }
+    .sc-val  { font-size: 1.55rem; font-weight: 800; line-height: 1.1; color: var(--text-main); }
     .sc-subval { font-size: .9rem; font-weight: 600; color: var(--text-muted); margin-top: .1rem; }
     .sc-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: .5rem; }
 
@@ -36,8 +37,9 @@
 
     /* ===== TABLE CARDS ===== */
     .table-card {
-      background: var(--bg-side); border: 1px solid var(--border);
+      background: #ffffff; border: 1px solid var(--border);
       border-radius: 14px; overflow: hidden; margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .table-card-head {
       padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);
@@ -67,8 +69,9 @@
     }
     .modal-overlay.visible { display: flex; }
     .modal-box {
-      background: #0c1230; border: 1px solid var(--border);
+      background: #ffffff; border: 1px solid var(--border);
       border-radius: 18px; padding: 2rem; max-width: 420px; width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
     #toast {
@@ -81,8 +84,8 @@
     #toast.success { background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
     #toast.error   { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; }
 
-    .amount { font-weight: 700; color: #4ade80; }
-    .order-code { font-size: .73rem; color: #93c5fd; font-family: monospace; }
+    .amount { font-weight: 700; color: #059669; }
+    .order-code { font-size: .73rem; color: #2563eb; font-family: monospace; }
     .platform-badge {
       display: inline-flex; align-items: center; gap: .3rem;
       padding: .18rem .55rem; border-radius: 20px; font-size: .68rem; font-weight: 600;
@@ -216,18 +219,18 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0" style="font-size:.82rem">
+            <table class="table table-hover mb-0" style="font-size:.82rem">
                 <thead>
                     <tr>
                         <th style="width:40px"></th>
-                        <th>Order ID</th>
-                        <th>Platform</th>
-                        <th>Tanggal Pesanan</th>
-                        <th>Tanggal Bayar</th>
-                        <th>Total Dana (Rp)</th>
+                        <th class="text-muted">Order ID</th>
+                        <th class="text-muted">Platform</th>
+                        <th class="text-muted">Tanggal Pesanan</th>
+                        <th class="text-muted">Tanggal Bayar</th>
+                        <th class="text-muted">Total Dana (Rp)</th>
                     </tr>
                 </thead>
-                <tbody id="pending-tbody">
+                <tbody id="pending-tbody" class="text-dark">
                     <tr><td colspan="6" class="text-center py-5 text-muted">Memuat data…</td></tr>
                 </tbody>
             </table>
@@ -243,18 +246,18 @@
             <strong style="font-size:.85rem">10 Pencairan Terakhir</strong>
         </div>
         <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0" style="font-size:.82rem">
+            <table class="table table-hover mb-0" style="font-size:.82rem">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
-                        <th>Platform</th>
-                        <th>Tanggal Bayar</th>
-                        <th>Dana (Rp)</th>
-                        <th>Terakhir Update</th>
-                        <th>Aksi</th>
+                        <th class="text-muted">Order ID</th>
+                        <th class="text-muted">Platform</th>
+                        <th class="text-muted">Tanggal Bayar</th>
+                        <th class="text-muted">Dana (Rp)</th>
+                        <th class="text-muted">Terakhir Update</th>
+                        <th class="text-muted">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="history-tbody">
+                <tbody id="history-tbody" class="text-dark">
                     <tr><td colspan="6" class="text-center py-5 text-muted">Memuat riwayat…</td></tr>
                 </tbody>
             </table>

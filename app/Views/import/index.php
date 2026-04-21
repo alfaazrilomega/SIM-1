@@ -4,18 +4,18 @@
 
 <style>
 .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
-.page-title   { font-size:1.4rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:10px; }
+.page-title   { font-size:1.4rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:10px; }
 .page-title i { color:var(--accent); }
 .page-subtitle{ font-size:.8rem; color:var(--text-muted); margin-top:2px; }
 
-.table-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+.table-card { background:#ffffff; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 .table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.table-card-title  { font-size:.9rem; font-weight:600; color:#e2e8f0; }
+.table-card-title  { font-size:.9rem; font-weight:600; color:var(--text-main); }
 
 .sim-table { width:100%; border-collapse:collapse; font-size:.83rem; }
-.sim-table thead tr { background:#020617; }
+.sim-table thead tr { background:#f8fafc; }
 .sim-table thead th { padding:11px 16px; text-align:left; color:var(--text-muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--border); white-space:nowrap; }
-.sim-table tbody td { padding:11px 16px; color:#cbd5e1; vertical-align:middle; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.sim-table tbody td { padding:11px 16px; color:#334155; vertical-align:middle; border-bottom: 1px solid var(--border); }
 
 .badge-sim { display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:600; padding:3px 9px; border-radius:20px; }
 .badge-success { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
@@ -31,7 +31,7 @@
     transition: border-color .2s, background .2s;
     cursor: pointer;
     position: relative;
-    background: rgba(30, 41, 59, 0.4);
+    background: #ffffff;
 }
 .upload-zone:hover {
     border-color: rgba(79,142,247,.5);
@@ -48,7 +48,7 @@
     font-size: 1.6rem; color: #4f8ef7;
     margin-bottom: 14px;
 }
-.upload-title { font-size: 1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; }
+.upload-title { font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
 .upload-sub   { font-size: .8rem; color: var(--text-muted); margin-bottom: 16px; }
 
 .info-list { list-style: none; padding: 0; }
@@ -144,14 +144,14 @@
                 <li>
                     <i class="bi bi-arrow-repeat text-warning"></i>
                     <div>
-                        <strong class="d-block text-light small">Upsert by Order ID</strong>
+                        <strong class="d-block text-dark small">Upsert by Order ID</strong>
                         <span class="text-muted extra-small">Sudah ada → UPDATE. Baru → INSERT. Tanpa duplikat data.</span>
                     </div>
                 </li>
                 <li>
                     <i class="bi bi-lock-fill text-success"></i>
                     <div>
-                        <strong class="d-block text-light small">Keamanan Pencairan</strong>
+                        <strong class="d-block text-dark small">Keamanan Pencairan</strong>
                         <span class="text-muted extra-small">Status <code>sudah ditarik</code> tidak akan terpengaruh re-import.</span>
                     </div>
                 </li>

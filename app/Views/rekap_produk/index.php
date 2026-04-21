@@ -4,11 +4,11 @@
 
 <style>
     .stat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:28px; }
-    .stat-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; overflow:hidden; transition:border-color .2s, transform .2s; }
-    .stat-card:hover { border-color:rgba(79,142,247,.4); transform:translateY(-2px); }
-    .stat-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(79,142,247,.04), rgba(124,92,252,.04)); }
+    .stat-card { background:#ffffff; border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; overflow:hidden; transition:border-color .2s, transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .stat-card:hover { border-color:rgba(59,130,246,.3); transform:translateY(-2px); }
+    .stat-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(59,130,246,.02), rgba(99,102,241,.02)); }
     .stat-card .stat-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-bottom:14px; }
-    .stat-card .stat-value { font-size:1.6rem; font-weight:700; color:#f1f5f9; line-height:1; margin-bottom:4px; }
+    .stat-card .stat-value { font-size:1.6rem; font-weight:700; color:var(--text-main); line-height:1; margin-bottom:4px; }
     .stat-card .stat-label { font-size:.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
     .stat-card .stat-change { position:absolute; top:20px; right:20px; font-size:.72rem; font-weight:600; padding:3px 8px; border-radius:20px; }
     
@@ -19,14 +19,14 @@
     .change-up   { background:rgba(34,197,94,.12); color:#4ade80; }
     .change-down { background:rgba(239,68,68,.12);  color:#f87171; }
 
-    .table-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+    .table-card { background:#ffffff; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    .table-card-title  { font-size:.9rem; font-weight:600; color:#e2e8f0; }
+    .table-card-title  { font-size:.9rem; font-weight:600; color:var(--text-main); }
     
     .sim-table { width:100%; border-collapse:collapse; font-size:.83rem; }
-    .sim-table thead tr { background:#020617; }
+    .sim-table thead tr { background:#f8fafc; }
     .sim-table thead th { padding:11px 16px; text-align:left; color:var(--text-muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--border); white-space:nowrap; }
-    .sim-table tbody td { padding:11px 16px; color:#cbd5e1; vertical-align:middle; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .sim-table tbody td { padding:11px 16px; color:#334155; vertical-align:middle; border-bottom: 1px solid var(--border); }
     
     .badge-sim { display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:600; padding:3px 9px; border-radius:20px; }
     .badge-success { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
@@ -34,9 +34,9 @@
 
     .month-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:20px; }
     .month-tab { background:transparent; border:1px solid var(--border); color:var(--text-muted); border-radius:8px; padding:6px 14px; font-size:.78rem; cursor:pointer; transition:all .15s; }
-    .month-tab.active { background:linear-gradient(90deg, rgba(79,142,247,.15), rgba(124,92,252,.1)); color:#fff; border-color:rgba(79,142,247,.3); }
+    .month-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
 
-    .summary-row td { background:#020617 !important; font-weight:700; color:#e2e8f0 !important; border-top:2px solid var(--border) !important; }
+    .summary-row td { background:#f8fafc !important; font-weight:700; color:var(--text-main) !important; border-top:2px solid var(--border) !important; }
 </style>
 
 <div class="page-header d-flex justify-content-between align-items-center mb-4">
@@ -45,7 +45,7 @@
         <p class="text-muted small">Ringkasan stok dan performa penjualan per produk.</p>
     </div>
     <div class="filter-bar d-flex gap-2">
-        <select class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;"><option>2025</option><option>2024</option></select>
+        <select class="form-select form-select-sm border-secondary" style="width: auto;"><option>2025</option><option>2024</option></select>
         <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-printer"></i> Cetak</button>
         <button class="btn btn-sm btn-success"><i class="bi bi-download"></i> Export Excel</button>
     </div>
@@ -91,7 +91,8 @@
 <div class="table-card">
     <div class="table-card-header">
         <span class="table-card-title"><i class="bi bi-box-seam-fill" style="color:var(--accent);margin-right:6px"></i>Rekap April 2025</span>
-        <input class="form-control form-control-sm bg-dark text-light border-secondary" type="text" placeholder="🔍 Cari produk…" style="width:180px">
+        <input class="form-control form-control-sm border-secondary" type="text" placeholder="🔍 Cari produk…" style="width:180px">
+Reference: [rekap_produk/index.php](file:///d:/laragon/www/SIM/app/Views/rekap_produk/index.php)
     </div>
     <div class="table-responsive">
         <table class="sim-table">

@@ -60,6 +60,12 @@ $routes->post('/produk-bumbu/tambah-stok',  'ProdukBumbu::tambahStok');
 $routes->post('/produk-bumbu/kurangi-stok', 'ProdukBumbu::kurangiStok');
 $routes->post('/produk-bumbu/hapus',        'ProdukBumbu::hapus');
 
+$routes->get('/produksi',              'Produksi::index');
+$routes->get('/produksi/data',         'Produksi::data');
+$routes->post('/produksi/simpan',      'Produksi::simpan');
+$routes->post('/produksi/batalkan',    'Produksi::batalkan');
+$routes->get('/produksi/detail/(:num)','Produksi::detail/$1');
+
 // Finance & HRD Modules (Kas, Absensi, Gaji)
 // =============================================
 $routes->group('finance', function ($routes) {
