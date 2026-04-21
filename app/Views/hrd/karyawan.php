@@ -111,6 +111,9 @@
   </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
 <script>
 function editKaryawan(data) {
     document.getElementById('form-title').innerText = 'Edit Karyawan';

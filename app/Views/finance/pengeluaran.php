@@ -1,5 +1,7 @@
 <?= $this->extend('layouts/main') ?>
+
 <?= $this->section('content') ?>
+
 
 <style>
 .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }

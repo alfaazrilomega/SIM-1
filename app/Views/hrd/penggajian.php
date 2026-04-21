@@ -1,12 +1,10 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('content') ?>
-<style>
-.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
-.page-title   { font-size:1.4rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:10px; }
-.page-title i { color:var(--accent); }
-.page-subtitle{ font-size:.8rem; color:var(--text-muted); margin-top:2px; }
 
+<?= $this->section('content') ?>
+
+<style>
 .table-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+
 .table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .table-card-title { font-size:.9rem; font-weight:600; color:#e2e8f0; }
 .table-responsive { overflow-x:auto; }

@@ -1,117 +1,117 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIM — Galaxy Interactive</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family:'Inter',sans-serif;
-  background:#040714;
-  color:#e2e8f0;
-  min-height:100vh;
-  overflow:hidden;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-canvas#galaxy3d {
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index:0;
-}
-.glow-cursor {
-  position:fixed;
-  width:360px;
-  height:360px;
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(79,142,247,.18), transparent 65%);
-  pointer-events:none;
-  transform:translate(-50%,-50%);
-  z-index:2;
-}
-.content {
-  position:relative;
-  z-index:3;
-  text-align:center;
-  max-width:860px;
-  width:100%;
-  padding:2.5rem 1.5rem;
-}
-.logo {
-  width:76px; height:76px;
-  margin:0 auto 1.2rem;
-  border-radius:20px;
-  background:linear-gradient(135deg,#4f8ef7,#7c5cfc);
-  display:flex; align-items:center; justify-content:center;
-  font-size:32px;
-  box-shadow:0 0 40px rgba(79,142,247,.5), 0 0 80px rgba(124,92,252,.25);
-}
-h1.sim-title {
-  font-size:2.8rem;
-  font-weight:800;
-  background:linear-gradient(100deg,#fff 30%,#7c5cfc 80%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  margin-bottom:.4rem;
-  letter-spacing:-.02em;
-}
-.sim-sub {
-  color:#64748b;
-  font-size:.95rem;
-  margin-bottom:2.5rem;
-}
-.grid {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-@media(max-width:540px){ .grid{ grid-template-columns:1fr; } }
-.card {
-  background:rgba(13,20,53,.45);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border-radius:18px;
-  padding:28px 24px;
-  text-align:left;
-  text-decoration:none;
-  color:#e2e8f0;
-  border:1px solid rgba(255,255,255,.07);
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  display:block;
-  transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
-}
-.card:hover {
-  transform:translateY(-14px) scale(1.04);
-  box-shadow:0 0 50px rgba(79,142,247,.38), 0 0 100px rgba(124,92,252,.22);
-}
-.card-shine {
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.12),transparent 70%);
-  transform:translateX(-120%);
-  transition:transform .6s ease;
-}
-.card:hover .card-shine { transform:translateX(120%); }
-.card-icon {
-  font-size:2.2rem;
-  margin-bottom:10px;
-  display:block;
-}
-.card-title { font-weight:700; font-size:1.05rem; margin-bottom:4px; }
-.card-desc { font-size:.85rem; color:#64748b; }
-.footer { margin-top:2rem; font-size:.75rem; color:#334155; }
-.tilt-wrap { perspective:900px; }
-.tilt-inner { transform-style:preserve-3d; transition:transform .2s ease-out; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIM — Galaxy Interactive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Inter',sans-serif;
+      background:#040714;
+      color:#e2e8f0;
+      min-height:100vh;
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    canvas#galaxy3d {
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+    }
+    .glow-cursor {
+      position:fixed;
+      width:360px;
+      height:360px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(79,142,247,.18), transparent 65%);
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      z-index:2;
+    }
+    .content {
+      position:relative;
+      z-index:3;
+      text-align:center;
+      max-width:860px;
+      width:100%;
+      padding:2.5rem 1.5rem;
+    }
+    .logo {
+      width:76px; height:76px;
+      margin:0 auto 1.2rem;
+      border-radius:20px;
+      background:linear-gradient(135deg,#4f8ef7,#7c5cfc);
+      display:flex; align-items:center; justify-content:center;
+      font-size:32px;
+      box-shadow:0 0 40px rgba(79,142,247,.5), 0 0 80px rgba(124,92,252,.25);
+    }
+    h1.sim-title {
+      font-size:2.8rem;
+      font-weight:800;
+      background:linear-gradient(100deg,#fff 30%,#7c5cfc 80%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:.4rem;
+      letter-spacing:-.02em;
+    }
+    .sim-sub {
+      color:#64748b;
+      font-size:.95rem;
+      margin-bottom:2.5rem;
+    }
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+    }
+    @media(max-width:540px){ .grid{ grid-template-columns:1fr; } }
+    .card {
+      background:rgba(13,20,53,.45);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border-radius:18px;
+      padding:28px 24px;
+      text-align:left;
+      text-decoration:none;
+      color:#e2e8f0;
+      border:1px solid rgba(255,255,255,.07);
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      display:block;
+      transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
+    }
+    .card:hover {
+      transform:translateY(-14px) scale(1.04);
+      box-shadow:0 0 50px rgba(79,142,247,.38), 0 0 100px rgba(124,92,252,.22);
+    }
+    .card-shine {
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.12),transparent 70%);
+      transform:translateX(-120%);
+      transition:transform .6s ease;
+    }
+    .card:hover .card-shine { transform:translateX(120%); }
+    .card-icon {
+      font-size:2.2rem;
+      margin-bottom:10px;
+      display:block;
+    }
+    .card-title { font-weight:700; font-size:1.05rem; margin-bottom:4px; }
+    .card-desc { font-size:.85rem; color:#64748b; }
+    .footer { margin-top:2rem; font-size:.75rem; color:#334155; }
+    .tilt-wrap { perspective:900px; }
+    .tilt-inner { transform-style:preserve-3d; transition:transform .2s ease-out; }
+  </style>
 </head>
 <body>
 
@@ -125,19 +125,56 @@ h1.sim-title {
 
   <div class="grid">
     <div class="tilt-wrap">
+      <a href="<?= base_url('/analytics') ?>" class="card tilt-inner">
+        <div class="card-shine"></div>
+        <span class="card-icon">📈</span>
+        <div class="card-title">Analytics</div>
+        <div class="card-desc">Monitoring performa & tren bisnis</div>
+      </a>
+    </div>
+
+    <div class="tilt-wrap">
+      <a href="<?= base_url('/rekap-produk') ?>" class="card tilt-inner">
+        <div class="card-shine"></div>
+        <span class="card-icon">📦</span>
+        <div class="card-title">Rekap Produk</div>
+        <div class="card-desc">Laporan performa varian & SKU</div>
+      </a>
+    </div>
+
+    <div class="tilt-wrap">
       <a href="<?= base_url('/import') ?>" class="card tilt-inner">
         <div class="card-shine"></div>
         <span class="card-icon">☁️</span>
         <div class="card-title">Import Data</div>
-        <div class="card-desc">Upload &amp; sinkronisasi data pesanan</div>
+        <div class="card-desc">Upload &amp; sinkronisasi marketplace</div>
       </a>
     </div>
+
     <div class="tilt-wrap">
-      <a href="<?= base_url('/withdrawal') ?>" class="card tilt-inner">
+      <a href="<?= base_url('/withdrawal') ?>" class="card tilt-inner" style="border-left: 4px solid #f59e0b;">
         <div class="card-shine"></div>
-        <span class="card-icon">🔐</span>
-        <div class="card-title">Withdrawal</div>
-        <div class="card-desc">Kelola penarikan dana</div>
+        <span class="card-icon">💰</span>
+        <div class="card-title">Pencairan Dana</div>
+        <div class="card-desc">Hak akses CEO. Kelola riwayat pendapatan.</div>
+      </a>
+    </div>
+
+    <div class="tilt-wrap">
+      <a href="<?= base_url('/finance/pengeluaran') ?>" class="card tilt-inner" style="border-left: 4px solid #4f8ef7;">
+        <div class="card-shine"></div>
+        <span class="card-icon">💳</span>
+        <div class="card-title">Finance & Kas</div>
+        <div class="card-desc">Manajemen pengeluaran & operasional.</div>
+      </a>
+    </div>
+
+    <div class="tilt-wrap">
+      <a href="<?= base_url('/hrd/karyawan') ?>" class="card tilt-inner" style="border-left: 4px solid #7c5cfc;">
+        <div class="card-shine"></div>
+        <span class="card-icon">👥</span>
+        <div class="card-title">HRD & Payroll</div>
+        <div class="card-desc">Kelola karyawan, absensi, & penggajian.</div>
       </a>
     </div>
   </div>
