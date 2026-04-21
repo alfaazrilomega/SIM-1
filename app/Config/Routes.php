@@ -12,6 +12,7 @@ $routes->get('/', 'Home::index');
 // =============================================
 $routes->get('/import', 'Import::index');
 $routes->post('/import/process', 'Import::process');
+$routes->get('/import/riwayat', 'Import::riwayat');
 
 // =============================================
 // Withdrawal Dashboard (CEO)
@@ -33,6 +34,7 @@ $routes->get('/analytics/data', 'Analytics::data');
 // =============================================
 $routes->get('/rekap-produk', 'RekapProduk::index');
 $routes->get('/rekap-produk/data', 'RekapProduk::data');
+$routes->get('/rekap-produk/unit-terjual', 'RekapProduk::unitTerjual');
 
 
 // Manajemen Bahan Baku

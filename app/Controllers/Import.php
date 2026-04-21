@@ -58,7 +58,7 @@ class Import extends BaseController
             mkdir($uploadDir, 0777, true);
         }
 
-        $newName = $file->getRandomName();
+        $newName  = $file->getRandomName();
         $file->move($uploadDir, $newName);
         $filePath = $uploadDir . $newName;
 
@@ -78,5 +78,25 @@ class Import extends BaseController
         @unlink($filePath);
 
         return $this->response->setJSON($result);
+    }
+
+    // -------------------------------------------------------
+    // GET /import/riwayat  — AJAX: Riwayat import dari DB
+    // -------------------------------------------------------
+    public function riwayat(): \CodeIgniter\HTTP\ResponseInterface
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setStatusCode(403)->setJSON(['success' => false]);
+        }
+
+        $db   = \Config\Database::connect();
+        $rows = $db->query("
+            SELECT filename, platform, total_rows, total_orders, inserted, updated, skipped, created_at
+            FROM import_log
+            ORDER BY created_at DESC
+            LIMIT 50
+        ")->getResultArray();
+
+        return $this->response->setJSON(['success' => true, 'rows' => $rows]);
     }
 }
