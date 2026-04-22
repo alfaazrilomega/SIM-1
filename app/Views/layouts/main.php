@@ -273,13 +273,13 @@
 
             <a href="<?= base_url('/produk-bumbu') ?>"
                 class="<?= str_contains(uri_string(), 'produk-bumbu') ? 'active' : '' ?>">
-                <span class="nav-icon"><i class="bi bi-jar-fill"></i></span>
+                <span class="nav-icon"><i class="bi bi-bag-fill"></i></span>
                 Produk Bumbu
             </a>
 
             <a href="<?= base_url('/produksi') ?>"
                 class="<?= str_contains(uri_string(), 'produksi') ? 'active' : '' ?>">
-                <span class="nav-icon">🏭</span>
+                <span class="nav-icon"><i class="bi bi-gear-fill"></i></span>
                 Produksi
             </a>
 

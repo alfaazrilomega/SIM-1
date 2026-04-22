@@ -118,7 +118,7 @@
 <!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal-box">
-    <div class="modal-icon" style="font-size:2.5rem;margin-bottom:1rem">💰</div>
+    <div class="modal-icon" style="font-size:2.5rem;margin-bottom:1rem;color:#f59e0b"><i class="bi bi-cash-coin"></i></div>
     <div class="modal-title" id="modal-title" style="font-size:1.15rem;font-weight:800;margin-bottom:.5rem">Konfirmasi Pencairan Dana</div>
     <div class="modal-desc" id="modal-desc" style="color:var(--text-muted);font-size:.88rem;line-height:1.65;margin-bottom:1.5rem">Apakah kamu yakin ingin mencairkan dana dari pesanan yang dipilih?</div>
     <div class="modal-amount" id="modal-amount" style="font-size:1.35rem;font-weight:800;color:#f59e0b;margin: .5rem 0 1rem;"></div>
@@ -147,7 +147,7 @@
 <div class="row g-3 mb-4" id="stats-grid">
     <div class="col-md-3">
         <div class="stat-card card-gold">
-            <div class="sc-icon">⏳</div>
+            <div class="sc-icon"><i class="bi bi-hourglass-split" style="color:#f59e0b"></i></div>
             <div class="sc-val" id="stat-belum-val">—</div>
             <div class="sc-subval" id="stat-belum-count">— pesanan</div>
             <div class="sc-label">Belum Dicairkan</div>
@@ -155,7 +155,7 @@
     </div>
     <div class="col-md-3">
         <div class="stat-card card-green">
-            <div class="sc-icon">✅</div>
+            <div class="sc-icon"><i class="bi bi-check-circle-fill" style="color:#10b981"></i></div>
             <div class="sc-val" id="stat-sudah-val">—</div>
             <div class="sc-subval" id="stat-sudah-count">— pesanan</div>
             <div class="sc-label">Sudah Dicairkan</div>
@@ -163,7 +163,7 @@
     </div>
     <div class="col-md-3">
         <div class="stat-card card-purple">
-            <div class="sc-icon">📦</div>
+            <div class="sc-icon"><i class="bi bi-box-seam-fill" style="color:#8b5cf6"></i></div>
             <div class="sc-val" id="stat-total-order">—</div>
             <div class="sc-subval">order selesai</div>
             <div class="sc-label">Total Pesanan Selesai</div>
@@ -171,7 +171,7 @@
     </div>
     <div class="col-md-3">
         <div class="stat-card card-blue">
-            <div class="sc-icon">💵</div>
+            <div class="sc-icon"><i class="bi bi-cash-stack" style="color:#3b82f6"></i></div>
             <div class="sc-val" id="stat-total-rev">—</div>
             <div class="sc-subval">kumulatif</div>
             <div class="sc-label">Total Pendapatan</div>
@@ -369,7 +369,7 @@ function renderHistory(rows) {
       <td>${fmtDt(r.paid_time)}</td>
       <td class="amount">${fmt(r.total_amount)}</td>
       <td class="text-muted" style="font-size:0.7rem">${fmtDt(r.tanggal_update)}</td>
-      <td><button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="resetOne('${esc(r.order_id)}')">Batal</button></td>
+      <td><button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="confirmReset('${esc(r.order_id)}')">Batal</button></td>
     </tr>`).join('');
 }
 
@@ -427,6 +427,30 @@ document.getElementById('check-all').onchange = (e) => {
   allPending.forEach(r => { if(checked) selectedIds.add(r.order_id); else selectedIds.delete(r.order_id); });
   document.querySelectorAll('.row-check').forEach(cb => cb.checked = checked);
   updateSelectedUI();
+};
+
+window.confirmReset = function(orderId) {
+  const modal = document.getElementById('confirm-modal');
+  document.getElementById('modal-title').textContent = 'Konfirmasi Pembatalan';
+  document.getElementById('modal-desc').textContent = 'Anda yakin ingin menarik mundur proses pencairan untuk Order ' + orderId + '? Dana akan kembali ke antrian Pending.';
+  document.getElementById('modal-amount').style.display = 'none';
+  
+  pendingConfirmFn = () => executeReset(orderId);
+  modal.classList.add('visible');
+};
+
+window.executeReset = async function(orderId) {
+  setLoading(true, 'Memproses pembatalan...');
+  try {
+    const resp = await fetch('<?= base_url('/withdrawal/reset') ?>', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ order_ids: [orderId] }),
+    });
+    const data = await resp.json();
+    if (!data.success) throw new Error(data.error);
+    showToast(data.message, 'success');
+    await loadData();
+  } catch (e) { showToast('Gagal membatalkan: ' + e.message, 'error'); } finally { setLoading(false); }
 };
 
 loadData();

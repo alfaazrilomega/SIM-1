@@ -224,7 +224,7 @@
             <option value="30">Bulan Ini</option>
             <option value="90">3 Bulan Terakhir</option>
             <option value="365">Tahun Ini</option>
-            <option value="all">Semua Data</option>
+            <option value="all" selected>Semua Data</option>
         </select>
         <div class="export-dropdown">
             <button id="exportBtn" class="btn btn-sm btn-primary">
@@ -262,8 +262,8 @@
     </div>
     <div class="chart-card">
         <div class="chart-head">
-            <i class="bi bi-pie-chart-fill text-info"></i>
-            <h3>Komposisi Platform</h3>
+            <i class="bi bi-wallet2 text-info"></i>
+            <h3>Metode Pembayaran</h3>
         </div>
         <div class="chart-body">
             <canvas id="platformChart"></canvas>
@@ -336,7 +336,7 @@
     // ========================================
     // Load Analytics Data
     // ========================================
-    function loadAnalyticsData(range = '30') {
+    function loadAnalyticsData(range = 'all') {
         fetch(`<?= base_url('analytics/data') ?>?range=${range}`, {
             method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -398,7 +398,7 @@
             </div>
             <div class="stat-card">
                 <span class="stat-change change-up">+${(totalQty / 10).toFixed(0)}</span>
-                <div class="stat-icon icon-green"><i class="bi bi-jar-fill"></i></div>
+                <div class="stat-icon icon-green"><i class="bi bi-bag-check-fill"></i></div>
                 <div class="stat-value">${kpi.total_order || 0}</div>
                 <div class="stat-label">Total Pesanan</div>
             </div>
@@ -644,7 +644,7 @@
     // Initial Load
     // ========================================
     document.addEventListener('DOMContentLoaded', function() {
-        loadAnalyticsData('30');
+        loadAnalyticsData('all');
     });
 </script>
 <?= $this->endSection() ?>

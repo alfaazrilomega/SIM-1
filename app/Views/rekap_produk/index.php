@@ -42,10 +42,14 @@
 <div class="page-header d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1"><i class="bi bi-box-seam-fill text-info"></i> Rekap Produk</h1>
-        <p class="text-muted small">Ringkasan stok dan performa penjualan per produk.</p>
+        <p class="text-muted small">Ringkasan performa penjualan per produk.</p>
     </div>
     <div class="filter-bar d-flex gap-2">
-        <select class="form-select form-select-sm border-secondary" style="width: auto;"><option>2025</option><option>2024</option></select>
+        <select id="yearSelect" class="form-select form-select-sm border-secondary" style="width: auto;">
+            <option value="<?= date('Y') ?>"><?= date('Y') ?></option>
+            <option value="<?= date('Y') - 1 ?>"><?= date('Y') - 1 ?></option>
+            <option value="<?= date('Y') - 2 ?>"><?= date('Y') - 2 ?></option>
+        </select>
         <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-printer"></i> Cetak</button>
         <button class="btn btn-sm btn-success"><i class="bi bi-download"></i> Export Excel</button>
     </div>
@@ -54,27 +58,23 @@
 <!-- Stat Cards -->
 <div class="stat-grid">
     <div class="stat-card">
-        <span class="stat-change change-up">+9.2%</span>
         <div class="stat-icon icon-blue"><i class="bi bi-box-seam-fill"></i></div>
-        <div class="stat-value">4.218</div>
-        <div class="stat-label">Total Terjual (Ytd)</div>
+        <div class="stat-value" id="stat-total-terjual">0</div>
+        <div class="stat-label">Total Terjual (Bruto)</div>
     </div>
     <div class="stat-card">
-        <span class="stat-change change-up">+11%</span>
         <div class="stat-icon icon-green"><i class="bi bi-currency-dollar"></i></div>
-        <div class="stat-value">Rp 61,2 Jt</div>
+        <div class="stat-value" id="stat-total-pendapatan">Rp 0</div>
         <div class="stat-label">Total Pendapatan</div>
     </div>
     <div class="stat-card">
-        <span class="stat-change change-up">+3.4%</span>
-        <div class="stat-icon icon-yellow"><i class="bi bi-graph-up-arrow"></i></div>
-        <div class="stat-value">Rp 14.500</div>
-        <div class="stat-label">Rata-rata / Produk</div>
+        <div class="stat-icon icon-yellow"><i class="bi bi-box"></i></div>
+        <div class="stat-value" id="stat-total-produk">0</div>
+        <div class="stat-label">Varian Terjual</div>
     </div>
     <div class="stat-card">
-        <span class="stat-change change-down">-1.2%</span>
         <div class="stat-icon icon-purple"><i class="bi bi-arrow-return-left"></i></div>
-        <div class="stat-value">38</div>
+        <div class="stat-value" id="stat-total-retur">0</div>
         <div class="stat-label">Total Retur</div>
     </div>
 </div>
@@ -82,17 +82,21 @@
 <!-- Month Tabs -->
 <div class="month-tabs">
     <?php
-    $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
-    foreach ($months as $m): ?>
-    <button class="month-tab <?= $m === 'Apr' ? 'active' : '' ?>"><?= $m ?></button>
+    $months = [
+        '01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr',
+        '05' => 'Mei', '06' => 'Jun', '07' => 'Jul', '08' => 'Agt',
+        '09' => 'Sep', '10' => 'Okt', '11' => 'Nov', '12' => 'Des'
+    ];
+    $currentMonth = date('m');
+    foreach ($months as $num => $label): ?>
+    <button class="month-tab <?= $num === $currentMonth ? 'active' : '' ?>" data-month="<?= $num ?>"><?= $label ?></button>
     <?php endforeach; ?>
 </div>
 
 <div class="table-card">
     <div class="table-card-header">
-        <span class="table-card-title"><i class="bi bi-box-seam-fill" style="color:var(--accent);margin-right:6px"></i>Rekap April 2025</span>
-        <input class="form-control form-control-sm border-secondary" type="text" placeholder="🔍 Cari produk…" style="width:180px">
-Reference: [rekap_produk/index.php](file:///d:/laragon/www/SIM/app/Views/rekap_produk/index.php)
+        <span class="table-card-title"><i class="bi bi-box-seam-fill" style="color:var(--accent);margin-right:6px"></i>Rekap <span id="rekap-label-title">Bulan Ini</span></span>
+        <input class="form-control form-control-sm border-secondary" type="text" id="searchInput" placeholder="🔍 Cari produk…" style="width:180px">
     </div>
     <div class="table-responsive">
         <table class="sim-table">
@@ -100,48 +104,152 @@ Reference: [rekap_produk/index.php](file:///d:/laragon/www/SIM/app/Views/rekap_p
                 <tr>
                     <th>#</th>
                     <th>Nama Produk</th>
-                    <th>SKU</th>
-                    <th>Stok Awal</th>
-                    <th>Produksi</th>
-                    <th>Terjual</th>
+                    <th>Variasi</th>
+                    <th>Terjual (Bruto)</th>
                     <th>Retur</th>
-                    <th>Stok Akhir</th>
+                    <th>Terjual (Bersih)</th>
+                    <th>Harga Satuan</th>
                     <th>Pendapatan</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php
-                $rekapData = [
-                    ['Bumbu Rendang 200g','BM-001','200','150','342','2','6','Rp 5.130.000'],
-                    ['Bumbu Soto Ayam 150g','BM-002','180','100','289','0','0 ','Rp 3.757.000'],
-                    ['Bumbu Opor 200g','BM-003','120','80','210','3','0 ','Rp 2.940.000'],
-                    ['Bumbu Gulai 200g','BM-004','160','60','198','1','21 ','Rp 2.772.000'],
-                    ['Bumbu Rawon 150g','BM-005','100','40','175','5','0 ','Rp 2.275.000'],
-                    ['Bumbu Pecel 100g','BM-006','80','50','134','0','0 ','Rp 1.340.000'],
-                ];
-                foreach ($rekapData as $i => $r): ?>
-                <tr>
-                    <td><?= $i+1 ?></td>
-                    <td class="fw-bold"><?= $r[0] ?></td>
-                    <td><code><?= $r[1] ?></code></td>
-                    <td><?= $r[2] ?></td>
-                    <td class="text-primary"><?= $r[3] ?></td>
-                    <td class="text-success fw-bold"><?= $r[4] ?></td>
-                    <td class="text-danger small"><?= $r[5] ?></td>
-                    <td><?= $r[6] ?></td>
-                    <td class="text-warning fw-bold"><?= $r[7] ?></td>
-                </tr>
-                <?php endforeach; ?>
-                <tr class="summary-row">
-                    <td colspan="5" class="text-end pe-4">Total</td>
-                    <td>1.348</td>
-                    <td>11</td>
-                    <td>—</td>
-                    <td class="text-warning fw-bold">Rp 18.214.000</td>
-                </tr>
+            <tbody id="table-body">
+                <tr><td colspan="8" class="text-center py-4">Memuat data...</td></tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const yearSelect = document.getElementById('yearSelect');
+    const monthTabs = document.querySelectorAll('.month-tab');
+    const tableBody = document.getElementById('table-body');
+    const rekapLabelTitle = document.getElementById('rekap-label-title');
+    const searchInput = document.getElementById('searchInput');
+
+    let allRows = [];
+
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+    }
+
+    function formatNumber(number) {
+        return new Intl.NumberFormat('id-ID').format(number);
+    }
+
+    async function fetchData() {
+        const year = yearSelect.value;
+        const activeMonthTab = document.querySelector('.month-tab.active');
+        const month = activeMonthTab ? activeMonthTab.dataset.month : new Date().getMonth() + 1;
+        const monthName = activeMonthTab ? activeMonthTab.textContent : '';
+        
+        rekapLabelTitle.textContent = `${monthName} ${year}`;
+        tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary spinner-border-sm" role="status"></div> Memuat data...</td></tr>`;
+        
+        const period = `${year}-${month.toString().padStart(2, '0')}`;
+        const url = `/rekap-produk/unit-terjual?from=${period}&to=${period}`;
+
+        try {
+            const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+            const data = await res.json();
+
+            if (data.success) {
+                allRows = data.rows || [];
+                renderTable(allRows);
+                updateStats(allRows);
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger">Gagal memuat data</td></tr>`;
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger">Terjadi kesalahan koneksi</td></tr>`;
+        }
+    }
+
+    function renderTable(rows) {
+        if (rows.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data untuk periode ini</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        let totalBruto = 0;
+        let totalRetur = 0;
+        let totalBersih = 0;
+        let totalPendapatan = 0;
+
+        rows.forEach((r, idx) => {
+            const netto = parseFloat(r.total_qty_bersih || 0);
+            const bruto = parseFloat(r.total_qty_bruto || 0);
+            const retur = parseFloat(r.total_retur || 0);
+            const pendapatan = parseFloat(r.total_subtotal || 0);
+
+            totalBruto += bruto;
+            totalRetur += retur;
+            totalBersih += netto;
+            totalPendapatan += pendapatan;
+
+            html += `<tr>
+                <td>${idx + 1}</td>
+                <td class="fw-bold">${r.nama_produk_raw || '-'}</td>
+                <td><span class="badge-sim ${r.variasi_raw ? 'badge-success' : 'bg-secondary text-white'}">${r.variasi_raw || 'Default'}</span></td>
+                <td class="text-primary fw-bold">${formatNumber(bruto)}</td>
+                <td class="text-danger small fw-bold">${formatNumber(retur)}</td>
+                <td class="text-success fw-bold">${formatNumber(netto)}</td>
+                <td>${formatRupiah(r.avg_harga_satuan || 0)}</td>
+                <td class="text-warning fw-bold">${formatRupiah(pendapatan)}</td>
+            </tr>`;
+        });
+
+        html += `<tr class="summary-row">
+            <td colspan="3" class="text-end pe-4">Total Keseluruhan</td>
+            <td class="text-primary">${formatNumber(totalBruto)}</td>
+            <td class="text-danger">${formatNumber(totalRetur)}</td>
+            <td class="text-success">${formatNumber(totalBersih)}</td>
+            <td>—</td>
+            <td class="text-warning fw-bold">${formatRupiah(totalPendapatan)}</td>
+        </tr>`;
+
+        tableBody.innerHTML = html;
+    }
+
+    function updateStats(rows) {
+        const sumBruto = rows.reduce((acc, r) => acc + parseFloat(r.total_qty_bruto || 0), 0);
+        const sumRetur = rows.reduce((acc, r) => acc + parseFloat(r.total_retur || 0), 0);
+        const sumPendapatan = rows.reduce((acc, r) => acc + parseFloat(r.total_subtotal || 0), 0);
+        
+        document.getElementById('stat-total-terjual').textContent = formatNumber(sumBruto);
+        document.getElementById('stat-total-retur').textContent = formatNumber(sumRetur);
+        document.getElementById('stat-total-pendapatan').textContent = formatRupiah(sumPendapatan);
+        document.getElementById('stat-total-produk').textContent = rows.length;
+    }
+
+    monthTabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            monthTabs.forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            fetchData();
+        });
+    });
+
+    yearSelect.addEventListener('change', fetchData);
+
+    searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        if (!val) {
+            renderTable(allRows);
+            return;
+        }
+        const filtered = allRows.filter(r => 
+            (r.nama_produk_raw && r.nama_produk_raw.toLowerCase().includes(val)) || 
+            (r.variasi_raw && r.variasi_raw.toLowerCase().includes(val))
+        );
+        renderTable(filtered);
+    });
+
+    // Ambil data pertama kali saat halaman dimuat
+    fetchData();
+});
+</script>
 
 <?= $this->endSection() ?>

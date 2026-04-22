@@ -29,7 +29,7 @@ class Analytics extends BaseController
         $whereDate = '';
         if ($range !== 'all') {
             $days      = (int) $range;
-            $whereDate = "AND paid_time >= DATE_SUB(NOW(), INTERVAL {$days} DAY)";
+            $whereDate = "AND COALESCE(paid_time, create_time) >= DATE_SUB(NOW(), INTERVAL {$days} DAY)";
         }
 
         // -------------------------------------------------------
@@ -45,7 +45,7 @@ class Analytics extends BaseController
                 COUNT(CASE WHEN status_penarikan = 'Belum Ditarik' THEN 1 END) AS pending_withdrawal,
                 SUM(CASE WHEN status_penarikan = 'Belum Ditarik' THEN total_amount ELSE 0 END) AS dana_pending
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
             {$whereDate}
         ")->getRowArray();
 
@@ -68,14 +68,13 @@ class Analytics extends BaseController
         $limitDays = min((int)($range === 'all' ? 365 : $range), 90);
         $revenueChart = $db->query("
             SELECT
-                DATE(paid_time) AS tgl,
+                DATE(COALESCE(paid_time, create_time)) AS tgl,
                 SUM(total_amount) AS revenue,
                 COUNT(*) AS jml_order
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
-              AND paid_time IS NOT NULL
-              AND paid_time >= DATE_SUB(NOW(), INTERVAL {$limitDays} DAY)
-            GROUP BY DATE(paid_time)
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
+              AND COALESCE(paid_time, create_time) >= DATE_SUB(NOW(), INTERVAL {$limitDays} DAY)
+            GROUP BY DATE(COALESCE(paid_time, create_time))
             ORDER BY tgl ASC
         ")->getResultArray();
 
@@ -84,15 +83,14 @@ class Analytics extends BaseController
         // -------------------------------------------------------
         $weeklyChart = $db->query("
             SELECT
-                YEARWEEK(paid_time, 1) AS minggu_key,
-                MIN(DATE(paid_time))   AS minggu_mulai,
+                YEARWEEK(COALESCE(paid_time, create_time), 1) AS minggu_key,
+                MIN(DATE(COALESCE(paid_time, create_time)))   AS minggu_mulai,
                 SUM(total_amount)      AS revenue,
                 COUNT(*)               AS jml_order
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
-              AND paid_time IS NOT NULL
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
               {$whereDate}
-            GROUP BY YEARWEEK(paid_time, 1)
+            GROUP BY YEARWEEK(COALESCE(paid_time, create_time), 1)
             ORDER BY minggu_key ASC
         ")->getResultArray();
 
@@ -105,7 +103,7 @@ class Analytics extends BaseController
                 COUNT(*) AS jml_order,
                 SUM(total_amount) AS revenue
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
               AND province IS NOT NULL AND province != ''
               {$whereDate}
             GROUP BY province
@@ -122,7 +120,7 @@ class Analytics extends BaseController
                 COUNT(*) AS jml,
                 SUM(total_amount) AS revenue
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
               AND payment_method IS NOT NULL AND payment_method != ''
               {$whereDate}
             GROUP BY payment_method
@@ -140,7 +138,7 @@ class Analytics extends BaseController
                 SUM(t.total_amount)             AS total_revenue
             FROM transaksi_pesanan t
             LEFT JOIN detail_pesanan d ON d.order_id = t.order_id
-            WHERE t.status_pesanan = 'Selesai'
+            WHERE t.status_pesanan IN ('Selesai', 'Dikirim')
               {$whereDate}
         ")->getRowArray();
 
@@ -149,13 +147,13 @@ class Analytics extends BaseController
         // -------------------------------------------------------
         $daily7 = $db->query("
             SELECT
-                DATE(paid_time) AS tgl,
+                DATE(COALESCE(paid_time, create_time)) AS tgl,
                 SUM(total_amount) AS revenue,
                 COUNT(*) AS jml_order
             FROM transaksi_pesanan
-            WHERE status_pesanan = 'Selesai'
-              AND paid_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-            GROUP BY DATE(paid_time)
+            WHERE status_pesanan IN ('Selesai', 'Dikirim')
+              AND COALESCE(paid_time, create_time) >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            GROUP BY DATE(COALESCE(paid_time, create_time))
             ORDER BY tgl ASC
         ")->getResultArray();
 
@@ -201,9 +199,27 @@ class Analytics extends BaseController
             SELECT SUM(total_amount) AS rev
             FROM transaksi_pesanan
             WHERE status_pesanan = 'Selesai'
-              AND YEAR(paid_time) = YEAR(DATE_SUB(NOW(), INTERVAL 1 MONTH))
-              AND MONTH(paid_time) = MONTH(DATE_SUB(NOW(), INTERVAL 1 MONTH))
+              AND YEAR(paid_time) = YEAR(NOW() - INTERVAL 1 MONTH)
+              AND MONTH(paid_time) = MONTH(NOW() - INTERVAL 1 MONTH)
         ")->getRowArray()['rev'] ?? 0;
+
+        // -------------------------------------------------------
+        // 11. Top Produk Terlaris
+        // -------------------------------------------------------
+        $topProducts = $db->query("
+            SELECT 
+                d.kombinasi_produk AS nama_produk_raw, 
+                SUM(d.quantity) AS total_qty, 
+                SUM(d.sku_subtotal_after_discount) AS total_revenue,
+                SUM(t.total_sku_quantity_of_return) AS total_return
+            FROM detail_pesanan d
+            JOIN transaksi_pesanan t ON t.order_id = d.order_id
+            WHERE t.status_pesanan IN ('Selesai', 'Dikirim')
+              {$whereDate}
+            GROUP BY d.kombinasi_produk
+            ORDER BY total_qty DESC
+            LIMIT 5
+        ")->getResultArray();
 
         return $this->response->setJSON([
             'success'       => true,
@@ -218,6 +234,7 @@ class Analytics extends BaseController
             'daily7'        => $daily7,
             'status_chart'  => $statusChart,
             'cancel_reasons'=> $cancelReasons,
+            'top_products'  => $topProducts,
             'rev_bulan_ini' => $revBulanIni,
             'rev_bulan_lalu'=> $revBulanLalu,
         ]);

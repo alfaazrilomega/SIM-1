@@ -172,6 +172,16 @@ class Withdrawal extends BaseController
         $orderIds     = array_values(array_filter(array_map(fn($id) => preg_replace('/[^A-Za-z0-9\-_]/', '', $id), $orderIds)));
         $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
         $db           = \Config\Database::connect();
+        $kasModel     = new TransaksiKasModel();
+
+        $agregat = $db->query("
+            SELECT platform, SUM(total_amount) as nominal_total, COUNT(*) as jumlah_pesanan
+            FROM transaksi_pesanan
+            WHERE order_id IN ({$placeholders}) AND status_penarikan = 'Sudah Ditarik'
+            GROUP BY platform
+        ", $orderIds)->getResultArray();
+
+        $db->transStart();
 
         $db->query("
             UPDATE transaksi_pesanan
@@ -181,6 +191,24 @@ class Withdrawal extends BaseController
         ", $orderIds);
 
         $affected = $db->affectedRows();
+
+        if ($affected > 0 && !empty($agregat)) {
+            foreach ($agregat as $row) {
+                $kasModel->save([
+                    'tanggal'        => date('Y-m-d'),
+                    'tipe_transaksi' => 'Pengeluaran', // Jurnal pembalik
+                    'kategori'       => "Operasional Lainnya", 
+                    'keterangan'     => "[KOREKSI] Batal Tarik Dana: Kembalikan uang " . $row['jumlah_pesanan'] . " pesanan (" . ($row['platform'] ?: 'Lainnya') . ") ke pool saldo tertahan.",
+                    'nominal'        => (float)$row['nominal_total']
+                ]);
+            }
+        }
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+             return $this->response->setJSON(['success' => false, 'error' => 'Gagal membatalkan pencairan karena masalah sinkronisasi ledger kas.']);
+        }
 
         return $this->response->setJSON([
             'success'  => true,

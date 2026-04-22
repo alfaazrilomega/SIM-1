@@ -31,7 +31,7 @@ class Finance extends BaseController
             ->findAll();
 
         $data = [
-            'transaksi'  => $this->kasModel->orderBy('tanggal', 'DESC')->findAll(),
+            'transaksi'  => $this->kasModel->orderBy('tanggal', 'DESC')->orderBy('id_transaksi', 'DESC')->findAll(),
             'saldo'      => $this->kasModel->getSaldoAkhir(),
             'unpaidGaji' => $unpaidGaji
         ];

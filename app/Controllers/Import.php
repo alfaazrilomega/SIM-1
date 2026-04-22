@@ -89,14 +89,21 @@ class Import extends BaseController
             return $this->response->setStatusCode(403)->setJSON(['success' => false]);
         }
 
-        $db   = \Config\Database::connect();
-        $rows = $db->query("
-            SELECT filename, platform, total_rows, total_orders, inserted, updated, skipped, created_at
-            FROM import_log
-            ORDER BY created_at DESC
-            LIMIT 50
-        ")->getResultArray();
+        try {
+            $db   = \Config\Database::connect();
+            $rows = $db->query("
+                SELECT filename, platform, total_rows, total_orders, inserted, updated, skipped, imported_at AS created_at
+                FROM import_log
+                ORDER BY imported_at DESC
+                LIMIT 50
+            ")->getResultArray();
 
-        return $this->response->setJSON(['success' => true, 'rows' => $rows]);
+            return $this->response->setJSON(['success' => true, 'rows' => $rows]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'error'   => $e->getMessage()
+            ]);
+        }
     }
 }

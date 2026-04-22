@@ -5,14 +5,14 @@
 <style>
 /* ── Page Header ── */
 .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
-.page-title  { font-size:1.4rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:10px; }
+.page-title  { font-size:1.4rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:10px; }
 .page-subtitle { font-size:.8rem; color:var(--text-muted); margin-top:2px; }
 
 /* ── Steps ── */
 .steps-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px; }
-.step-card  { background:#0f172a; border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; gap:12px; align-items:flex-start; }
-.step-num   { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#4f8ef7,#7c5cfc); display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:#fff; flex-shrink:0; }
-.step-title { font-size:.82rem; font-weight:600; color:#e2e8f0; margin-bottom:3px; }
+.step-card  { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; gap:12px; align-items:flex-start; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+.step-num   { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:#fff; flex-shrink:0; }
+.step-title { font-size:.82rem; font-weight:600; color:var(--text-main); margin-bottom:3px; }
 .step-desc  { font-size:.73rem; color:var(--text-muted); }
 
 /* ── Drop Zone ── */
@@ -32,7 +32,7 @@
 .upload-zone.file-selected { border-color: #22c55e; background: rgba(34,197,94,.04); }
 .upload-zone .uz-icon      { font-size: 2.8rem; color: #4f8ef7; display: block; margin-bottom: 12px; transition: transform .3s; }
 .upload-zone:hover .uz-icon { transform: translateY(-4px); }
-.upload-zone .uz-title     { font-size: .95rem; font-weight: 600; color: #e2e8f0; margin-bottom: 5px; }
+.upload-zone .uz-title     { font-size: .95rem; font-weight: 600; color: var(--text-main); margin-bottom: 5px; }
 .upload-zone .uz-sub       { font-size: .8rem; color: var(--text-muted); }
 .upload-zone .uz-formats   { display:inline-flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
 .fmt-tag { background:#1e293b; border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:.72rem; color:var(--text-muted); }
@@ -50,7 +50,7 @@
     gap: 10px;
 }
 #file-info .fi-icon { font-size: 1.4rem; color: #4ade80; }
-#file-info .fi-name { font-weight: 600; font-size: .85rem; color: #e2e8f0; }
+#file-info .fi-name { font-weight: 600; font-size: .85rem; color: var(--text-main); }
 #file-info .fi-size { font-size: .75rem; color: var(--text-muted); }
 #btn-clear { margin-left: auto; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 2px 6px; }
 #btn-clear:hover { color: #f87171; }
@@ -89,52 +89,65 @@
 .chip-rows    .sv { color:#94a3b8; }
 
 /* ── Preview Table ── */
-.table-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+.table-card { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
 .table-card-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
-.table-card-title { font-size:.85rem; font-weight:600; color:#e2e8f0; }
+.table-card-title { font-size:.85rem; font-weight:600; color:var(--text-main); }
 .table-responsive { overflow-x:auto; max-height:380px; overflow-y:auto; }
 .sim-table { width:100%; border-collapse:collapse; font-size:.8rem; }
-.sim-table thead tr { background:#020617; position:sticky; top:0; z-index:1; }
+.sim-table thead tr { background:#f8fafc; position:sticky; top:0; z-index:1; }
 .sim-table thead th { padding:10px 14px; text-align:left; color:var(--text-muted); font-weight:600; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--border); white-space:nowrap; }
-.sim-table tbody tr { border-bottom:1px solid rgba(30,41,59,.6); transition:background .15s; }
-.sim-table tbody tr:hover { background:rgba(79,142,247,.04); }
-.sim-table tbody td { padding:10px 14px; color:#cbd5e1; vertical-align:middle; }
+.sim-table tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+.sim-table tbody tr:hover { background:#f8fafc; }
+.sim-table tbody td { padding:10px 14px; color:#334155; vertical-align:middle; }
 .badge-sim { display:inline-flex; align-items:center; gap:4px; font-size:.68rem; font-weight:600; padding:3px 9px; border-radius:20px; }
-.badge-success { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
-.badge-warning { background:rgba(245,158,11,.12); color:#fbbf24; border:1px solid rgba(245,158,11,.2); }
-.badge-danger  { background:rgba(239,68,68,.12); color:#f87171; border:1px solid rgba(239,68,68,.2); }
-.badge-info    { background:rgba(79,142,247,.12); color:#4f8ef7; border:1px solid rgba(79,142,247,.2); }
+.badge-success { background:rgba(16,185,129,.12); color:#059669; border:1px solid rgba(16,185,129,.2); }
+.badge-warning { background:rgba(245,158,11,.12); color:#d97706; border:1px solid rgba(245,158,11,.2); }
+.badge-danger  { background:rgba(239,68,68,.12);  color:#dc2626; border:1px solid rgba(239,68,68,.2); }
+.badge-info    { background:rgba(59,130,246,.12);  color:#3b82f6; border:1px solid rgba(59,130,246,.2); }
 
 /* ── Error Box ── */
 .alert-sim { padding:12px 16px; border-radius:8px; margin-bottom:14px; display:flex; align-items:flex-start; gap:10px; font-size:.82rem; font-weight:500; border:1px solid transparent; }
-.alert-danger  { background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.25); color:#fca5a5; }
+.alert-danger  { background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.25); color:#dc2626; }
 
 /* ── Riwayat table ── */
-.riwayat-card { background:#0f172a; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.riwayat-card { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.05); }
 .filter-bar  { display:flex; gap:8px; flex-wrap:wrap; }
-.sim-input   { background:#1e293b; border:1px solid var(--border); color:#e2e8f0; border-radius:8px; padding:6px 12px; font-size:.8rem; outline:none; }
+.sim-input   { background:#fff; border:1px solid var(--border); color:var(--text-main); border-radius:8px; padding:6px 12px; font-size:.8rem; outline:none; }
 .btn-ghost   { background:transparent; border:1px solid var(--border); color:var(--text-muted); border-radius:8px; padding:6px 14px; font-size:.8rem; cursor:pointer; transition:border-color .15s,color .15s; display:inline-flex; align-items:center; gap:6px; }
-.btn-ghost:hover { border-color:rgba(79,142,247,.4); color:#e2e8f0; }
-.btn-accent  { background:linear-gradient(90deg,#4f8ef7,#7c5cfc); border:none; color:#fff; border-radius:8px; padding:6px 14px; font-size:.8rem; font-weight:600; cursor:pointer; transition:opacity .15s; display:inline-flex; align-items:center; gap:6px; }
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+.btn-accent  { background:linear-gradient(90deg,#3b82f6,#6366f1); border:none; color:#fff; border-radius:8px; padding:6px 14px; font-size:.8rem; font-weight:600; cursor:pointer; transition:opacity .15s; display:inline-flex; align-items:center; gap:6px; }
 .btn-accent:hover { opacity:.85; }
-=======
+
+/* ── Drop Zone ── */
+.upload-zone {
     background: #ffffff;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
 }
 .upload-zone:hover {
-    border-color: rgba(79,142,247,.5);
-    background: rgba(79,142,247,.03);
+    border-color: var(--accent);
+    background: #f8fafc;
 }
 .upload-zone input[type=file] {
     position: absolute; inset: 0; opacity: 0; cursor: pointer;
 }
 .upload-icon {
     width: 56px; height: 56px;
-    background: linear-gradient(135deg, rgba(79,142,247,.15), rgba(124,92,252,.15));
+    background: linear-gradient(135deg, rgba(59,130,246,.15), rgba(99,102,241,.15));
     border-radius: 16px;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; color: #4f8ef7;
+    font-size: 1.6rem; color: var(--accent);
     margin-bottom: 14px;
+}
 </style>
+
 
 <div class="page-header">
     <div>
@@ -142,9 +155,6 @@
         <div class="page-subtitle">Import data pesanan TikTok dari file .xlsx</div>
     </div>
     <div class="filter-bar">
-        <button class="btn-ghost" id="btn-template" onclick="alert('Template belum tersedia. Gunakan file export dari TikTok Seller Center.')">
-            <i class="bi bi-file-earmark-arrow-down"></i> Unduh Template
-        </button>
         <button class="btn-accent" id="btn-trigger-import" onclick="document.getElementById('excel-input').click()">
             <i class="bi bi-cloud-arrow-down-fill"></i> Pilih File
         </button>
@@ -240,8 +250,14 @@
 <!-- Riwayat Import (dari DB) -->
 <div class="riwayat-card">
     <div class="table-card-header" style="border-bottom:1px solid var(--border); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-        <span class="table-card-title"><i class="bi bi-clock-history" style="color:var(--accent);margin-right:6px"></i>Riwayat Import</span>
-        <input class="sim-input" type="text" id="search-riwayat" placeholder="🔍 Cari…" style="width:180px" oninput="filterRiwayat(this.value)">
+        <span class="table-card-title" style="flex:1;"><i class="bi bi-clock-history" style="color:var(--accent);margin-right:6px"></i>Riwayat Import</span>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+            <span style="font-size:0.75rem;color:var(--text-muted)">Dari:</span>
+            <input class="sim-input" type="date" id="filter-start" onchange="runFilterRiwayat()" title="Awal Tanggal">
+            <span style="font-size:0.75rem;color:var(--text-muted)">Sampai:</span>
+            <input class="sim-input" type="date" id="filter-end" onchange="runFilterRiwayat()" title="Sampai Tanggal">
+            <input class="sim-input" type="text" id="search-riwayat" placeholder="🔍 Cari nama file…" style="width:180px" oninput="runFilterRiwayat()">
+        </div>
     </div>
     <div class="table-responsive">
         <table class="sim-table" id="riwayat-table">
@@ -512,8 +528,9 @@ async function loadRiwayat() {
         const resp = await fetch('<?= base_url('/import/riwayat') ?>', {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const data = await resp.json();
+        if (!resp.ok || !data.success) throw new Error(data.error || ('HTTP ' + resp.status));
+        
         riwayatData = data.rows || [];
         renderRiwayat(riwayatData);
     } catch (e) {
@@ -530,7 +547,7 @@ function renderRiwayat(rows) {
     tbody.innerHTML = rows.map((r, i) => `
         <tr>
             <td style="color:var(--text-muted)">${i+1}</td>
-            <td style="color:#e2e8f0;font-weight:500"><i class="bi bi-file-earmark-spreadsheet" style="color:#4ade80;margin-right:5px"></i>${escHtml(r.filename)}</td>
+            <td style="color:var(--text-main);font-weight:500"><i class="bi bi-file-earmark-spreadsheet" style="color:#4ade80;margin-right:5px"></i>${escHtml(r.filename)}</td>
             <td>${Number(r.total_rows||0).toLocaleString()}</td>
             <td style="color:#4ade80">${Number(r.inserted||0).toLocaleString()}</td>
             <td style="color:#fbbf24">${Number(r.updated||0).toLocaleString()}</td>
@@ -540,10 +557,29 @@ function renderRiwayat(rows) {
     `).join('');
 }
 
-function filterRiwayat(q) {
-    const filtered = riwayatData.filter(r =>
-        (r.filename || '').toLowerCase().includes(q.toLowerCase())
-    );
+function runFilterRiwayat() {
+    const q = document.getElementById('search-riwayat').value.toLowerCase();
+    const start = document.getElementById('filter-start').value;
+    const end = document.getElementById('filter-end').value;
+
+    const filtered = riwayatData.filter(r => {
+        const matchName = (r.filename || '').toLowerCase().includes(q);
+        
+        let matchDate = true;
+        if (start || end) {
+            // Asumsi r.created_at dalam format "YYYY-MM-DD HH:MM:SS"
+            const rowDateRaw = r.created_at || r.tanggal;
+            if (rowDateRaw) {
+                const rowDate = rowDateRaw.split(' ')[0]; // Ambil YYYY-MM-DD
+                if (start && rowDate < start) matchDate = false;
+                if (end   && rowDate > end)   matchDate = false;
+            } else {
+                matchDate = false;
+            }
+        }
+        
+        return matchName && matchDate;
+    });
     renderRiwayat(filtered);
 }
 
@@ -551,128 +587,4 @@ function filterRiwayat(q) {
 loadRiwayat();
 </script>
 
-=======
-        <div class="page-title"><i class="bi bi-cloud-arrow-down-fill"></i> Import Marketplace Data</div>
-        <div class="page-subtitle">Upload & sinkronisasi pesanan TikTok (OrderSKUList)</div>
-    </div>
-    <div class="filter-bar d-flex gap-2">
-        <a href="<?= base_url('/withdrawal') ?>" class="btn btn-sm btn-outline-warning"><i class="bi bi-shield-lock-fill"></i> Pencairan (CEO)</a>
-        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-arrow-down"></i> Unduh Template</button>
-    </div>
-</div>
-
-<div class="row g-4">
-    <div class="col-lg-8">
-        <div class="card bg-side border-sim p-4 mb-4">
-            <p class="text-muted small text-uppercase fw-bold mb-3"><i class="bi bi-cloud-arrow-up me-2"></i>Upload File Excel</p>
-            
-            <form action="<?= base_url('/import/process') ?>" method="POST" enctype="multipart/form-data" id="importForm">
-                <div class="upload-zone" id="drop-zone">
-                    <input type="file" name="excel_file" id="file-picker" accept=".xlsx,.xls,.csv" required>
-                    <div class="upload-icon"><i class="bi bi-file-earmark-spreadsheet"></i></div>
-                    <div class="upload-title">Seret & Lepas file di sini</div>
-                    <div class="upload-sub">atau <u class="text-primary">klik untuk memilih file</u></div>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <span class="badge bg-dark border border-secondary text-muted">.xlsx</span>
-                        <span class="badge bg-dark border border-secondary text-muted">.csv</span>
-                        <span class="badge bg-dark border border-secondary text-muted">Maks 50MB</span>
-                    </div>
-                </div>
-
-                <div id="file-info" class="alert alert-info d-none mb-3 py-2 small">
-                    <i class="bi bi-check-circle-fill me-2"></i><span id="filename"></span>
-                </div>
-
-                <button type="submit" id="btn-import" class="btn btn-primary w-100 py-2 fw-bold" disabled>
-                    <i class="bi bi-database-up me-2"></i>Mulai Sinkronisasi Data
-                </button>
-            </form>
-        </div>
-
-        <!-- Riwayat Import -->
-        <div class="table-card">
-            <div class="table-card-header">
-                <span class="table-card-title"><i class="bi bi-clock-history me-2 text-info"></i>Riwayat Import</span>
-            </div>
-            <div class="table-responsive">
-                <table class="sim-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nama File</th>
-                            <th>Total</th>
-                            <th>Berhasil</th>
-                            <th>Gagal</th>
-                            <th>Tanggal</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Mock data for UI demo
-                        $history = [
-                            ['tiktok_orders_apr_15.xlsx', '432', '432', '0', '15 Apr 2025', 'Selesai', 'success'],
-                            ['tiktok_orders_apr_10.xlsx', '210', '208', '2', '10 Apr 2025', 'Selesai', 'warning'],
-                        ];
-                        foreach ($history as $i => $h): ?>
-                        <tr>
-                            <td><?= $i+1 ?></td>
-                            <td><i class="bi bi-file-earmark-excel me-2 text-success"></i><?= $h[0] ?></td>
-                            <td><?= $h[1] ?></td>
-                            <td class="text-success"><?= $h[2] ?></td>
-                            <td class="<?= $h[3] > 0 ? 'text-danger' : 'text-muted' ?>"><?= $h[3] ?></td>
-                            <td class="text-muted small"><?= $h[4] ?></td>
-                            <td><span class="badge-sim badge-<?= $h[6] ?>"><?= $h[5] ?></span></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card bg-side border-sim p-4 mb-4">
-            <p class="text-muted small text-uppercase fw-bold mb-3"><i class="bi bi-shield-check me-2"></i>Aturan Bisnis</p>
-            <ul class="info-list">
-                <li>
-                    <i class="bi bi-arrow-repeat text-warning"></i>
-                    <div>
-                        <strong class="d-block text-dark small">Upsert by Order ID</strong>
-                        <span class="text-muted extra-small">Sudah ada → UPDATE. Baru → INSERT. Tanpa duplikat data.</span>
-                    </div>
-                </li>
-                <li>
-                    <i class="bi bi-lock-fill text-success"></i>
-                    <div>
-                        <strong class="d-block text-dark small">Keamanan Pencairan</strong>
-                        <span class="text-muted extra-small">Status <code>sudah ditarik</code> tidak akan terpengaruh re-import.</span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<?= $this->endSection() ?>
-
-<?= $this->section('js') ?>
-<script>
-    const filePicker = document.getElementById('file-picker');
-    const btnImport = document.getElementById('btn-import');
-    const fileInfo = document.getElementById('file-info');
-    const filename = document.getElementById('filename');
-
-    filePicker.addEventListener('change', function() {
-        if (this.files && this.files.length > 0) {
-            filename.textContent = this.files[0].name;
-            fileInfo.classList.remove('d-none');
-            btnImport.disabled = false;
-        } else {
-            fileInfo.classList.add('d-none');
-            btnImport.disabled = true;
-        }
-    });
-</script>
->>>>>>> upstream/rehan
 <?= $this->endSection() ?>
